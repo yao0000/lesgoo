@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 class InputText extends StatelessWidget {
   final String label;
   final String hintText;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final bool isRequired;
   final TextInputType keyboardType;
+  final bool readOnly;
 
   const InputText({
     super.key,
     required this.label,
     required this.hintText,
-    required this.controller,
+    this.controller,
     this.isRequired = false,
     this.keyboardType = TextInputType.text,
+    this.readOnly = false,
   });
 
   @override
@@ -24,6 +26,7 @@ class InputText extends StatelessWidget {
         SizedBox(height: 20),
         Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
         TextFormField(
+          readOnly: readOnly,
           controller: controller,
           validator: (value) {
             if (!isRequired) {

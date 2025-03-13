@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:travel/constants/app_colors.dart';
 
 class Button extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
+  final Color buttonColor;
+  final Color textColor;
 
-  const Button({super.key, required this.text, this.onPressed});
+  const Button({
+    super.key,
+    required this.text,
+    this.onPressed,
+    required this.buttonColor,
+    required this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +23,10 @@ class Button extends StatelessWidget {
         ElevatedButton(
           onPressed: onPressed ?? () {},
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.navyBlue,
+            backgroundColor: buttonColor,
             padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
           ),
-          child: Text(text, style: TextStyle(color: AppColors.white)),
+          child: Text(text, style: TextStyle(color: textColor)),
         ),
       ],
     );

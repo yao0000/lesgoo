@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:travel/constants/app_colors.dart';
 
-class ButtonText extends StatelessWidget {
+class ClickableText extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
 
-  const ButtonText({super.key, required this.label, this.onPressed});
+  const ClickableText({super.key, required this.label, this.onPressed});
 
   @override
   Widget build(BuildContext context) {
