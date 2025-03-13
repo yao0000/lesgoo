@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
-import 'package:travel/services/auth_service.dart';
+import 'package:travel/services/firebase_auth_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -19,7 +19,6 @@ class _SplashScreenState extends State<SplashScreen> {
       //AuthService.signOut();
       if (mounted) {
         if (AuthService.isUserLoggedIn()) {
-          
           context.go('/home');
         } else {
           context.go('/login');

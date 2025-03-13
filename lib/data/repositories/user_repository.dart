@@ -24,4 +24,14 @@ class UserRepository {
     }
     return null;
   }
+
+  // Fetch user as a stream for real-time updates
+  static Stream<UserModel?> getUserStream(String id) {
+    return FirestoreService.itemListener(collection, id).map((snapshot) {
+      if (snapshot.exists && snapshot.data() != null) {
+        return UserModel.fromJson(snapshot.data() as Map<String, dynamic>);
+      }
+      return null;
+    });
+  }
 }

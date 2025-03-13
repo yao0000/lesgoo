@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
-import 'package:travel/services/auth_service.dart';
+import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -77,8 +77,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 keyboardType: TextInputType.emailAddress,
               ),
               Center(
-                child: Button(
-                  text: "Reset Password",
+                child: ButtonAuth(
+                  label: "Reset Password",
                   onPressed: _resetPassword,
                 ),
               ),

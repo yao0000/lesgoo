@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class FirestoreService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -21,18 +20,29 @@ class FirestoreService {
     }
   }
 
-  static Future<DocumentSnapshot<Object?>> getItem(collection, String id) async {
+  static Future<DocumentSnapshot<Object?>> getItem(
+    collection,
+    String id,
+  ) async {
     try {
-      DocumentSnapshot doc = await _firestore.collection(collection).doc(id).get();
+      DocumentSnapshot doc =
+          await _firestore.collection(collection).doc(id).get();
 
       if (doc.exists) {
         return doc;
-      }
-      else {
+      } else {
         throw Exception("No data found");
       }
     } catch (error) {
       rethrow;
     }
+  }
+
+  // real-time listener
+  static Stream<DocumentSnapshot<Object?>> itemListener(
+    String collection,
+    String id,
+  ) {
+    return _firestore.collection(collection).doc(id).snapshots();
   }
 }

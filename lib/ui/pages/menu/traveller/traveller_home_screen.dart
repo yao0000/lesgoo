@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel/constants/app_colors.dart';
-import 'package:travel/ui/pages/menu/discover/discover_page.dart';
+import 'package:travel/ui/pages/menu/traveller/discover/discover_page.dart';
+import 'package:travel/ui/pages/menu/traveller/profile/profile_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,14 +24,14 @@ class _HomeScreenState extends State<HomeScreen> {
     DiscoverPage(),
     Center(child: Text("Itinerary Page", style: TextStyle(fontSize: 20))),
     Center(child: Text("Tickets Page", style: TextStyle(fontSize: 20))),
-    Center(child: Text("Profile Page", style: TextStyle(fontSize: 20))),
+    ProfilePage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.bgColor,
-      appBar: AppBar(
+      /*appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -42,8 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.black,
           ),
         ),
-      ),
-      body: _pages[_selectedIndex], 
+      ),*/
+      body: _pages[_selectedIndex],
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -52,21 +53,38 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.white70,
         backgroundColor: AppColors.navyBlue,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: SizedBox(
+              width: 28,
+              height: 28,
+              child: Image.asset('assets/img/home.png'),
+            ),
             label: "Discover",
           ),
+
           BottomNavigationBarItem(
-            icon: Icon(Icons.event_note),
+            icon: SizedBox(
+              width: 28,
+              height: 28,
+              child: Image.asset('assets/img/itinerary.png'),
+            ),
             label: "Itinerary",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number),
-            label: "Tickets",
+            icon: SizedBox(
+              width: 28,
+              height: 28,
+              child: Image.asset('assets/img/ticket.png'),
+            ),
+            label: "Ticket",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
+            icon: SizedBox(
+              width: 28,
+              height: 28,
+              child: Image.asset('assets/img/me.png'),
+            ),
             label: "Me",
           ),
         ],

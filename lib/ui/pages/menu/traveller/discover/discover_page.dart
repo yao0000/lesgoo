@@ -26,10 +26,10 @@ class DiscoverPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconCategory(icon: Icons.flight, label: "Flights", onTap: () => print('Flights is clicked')),
-                IconCategory(icon: Icons.hotel, label: "Hotels", onTap: () => print('Hotels is clicked')),
-                IconCategory(icon: Icons.food_bank, label: "Food", onTap: () => print('Food is clicked')),
-                IconCategory(icon: Icons.directions_car, label: "Cars", onTap: () => print('cars is clicked')),
+                IconCategory(iconPath: 'assets/img/Flights.png', label: "Flights", onTap: () => print('Flights is clicked')),
+                IconCategory(iconPath: 'assets/img/Hotels.png', label: "Hotels", onTap: () => print('Hotels is clicked')),
+                IconCategory(iconPath: 'assets/img/Restaurant.png', label: "Food", onTap: () => print('Food is clicked')),
+                IconCategory(iconPath: 'assets/img/Car.png', label: "Cars", onTap: () => print('cars is clicked')),
               ],
             ),
             const SizedBox(height: 20),

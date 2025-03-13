@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
-import 'package:travel/services/auth_service.dart';
+import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
 
                 SizedBox(height: 20),
-                Button(text: "LogIn", onPressed: _login),
+                ButtonAuth(label: "LogIn", onPressed: _login),
                 SizedBox(height: 20),
                 Text("You don’t have an account?"),
                 TextButton(
