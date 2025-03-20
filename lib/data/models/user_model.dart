@@ -1,15 +1,16 @@
 //import 'dart:convert';
 
 class UserModel {
-  final String uid;
-  final String username;
-  final String name;
-  final String email;
-  final String phone;
-  final String gender;
-  final String country;
-  final String role;
-  final String password;
+  String uid;
+  String username;
+  String name;
+  String email;
+  String phone;
+  String gender;
+  String country;
+  String role;
+  String password;
+  String imageUrl;
 
   UserModel({
     required this.uid,
@@ -20,6 +21,7 @@ class UserModel {
     required this.gender,
     required this.phone,
     required this.role,
+    this.imageUrl = "",
     this.password = "",
   });
 
@@ -33,6 +35,7 @@ class UserModel {
       gender: json['gender'] ?? '',
       phone: json['phone'] ?? '',
       role: json['role'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
     );
   }
 
@@ -46,6 +49,7 @@ class UserModel {
       'gender': gender,
       'phone': phone,
       'role': role,
+      'imageUrl': imageUrl,
     };
   }
 }
