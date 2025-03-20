@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/services/firebase_auth_service.dart';
+import 'package:travel/data/global.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,15 +16,22 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () async {
       //AuthService.signOut();
       if (mounted) {
         if (AuthService.isUserLoggedIn()) {
-          context.go('/home');
+          await Global.loadUserInfo();
+          if (Global.user.role == 'user') {
+            context.go('/home');
+          }
+          else {
+            context.go('/adminHome');
+          }
         } else {
           context.go('/login');
         }
       }
+      //context.go('/home');
     });
   }
 

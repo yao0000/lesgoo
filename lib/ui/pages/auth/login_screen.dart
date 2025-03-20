@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/global.dart';
 import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 
@@ -30,7 +31,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (success) {
       showToast("Login successfully");
-      context.go('/home');
+      await Global.loadUserInfo();
+      if (Global.user.role == 'user') {
+        context.go('/home');
+      } else {
+        context.go('/adminHome');
+      }
     }
   }
 
@@ -71,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      GoRouter.of(context).push('/home');
+                      GoRouter.of(context).push('/adminHome');
                     },
                     child: Text(
                       "Forgot Password?",
