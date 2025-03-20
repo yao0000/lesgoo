@@ -5,6 +5,7 @@ class Button extends StatelessWidget {
   final VoidCallback? onPressed;
   final Color buttonColor;
   final Color textColor;
+  final Color borderColor;
 
   const Button({
     super.key,
@@ -12,6 +13,7 @@ class Button extends StatelessWidget {
     this.onPressed,
     required this.buttonColor,
     required this.textColor,
+    this.borderColor = Colors.transparent
   });
 
   @override
@@ -25,6 +27,10 @@ class Button extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: buttonColor,
             padding: EdgeInsets.symmetric(horizontal: 50, vertical: 12),
+            side: BorderSide(
+              color: borderColor,
+              width: 2,
+            ),
           ),
           child: Text(text, style: TextStyle(color: textColor)),
         ),

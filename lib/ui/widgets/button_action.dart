@@ -5,8 +5,9 @@ import 'base/button.dart';
 class ButtonAction extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
+  final bool isSelected;
 
-  const ButtonAction({super.key, required this.label, this.onPressed});
+  const ButtonAction({super.key, required this.label, this.onPressed, this.isSelected = false});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class ButtonAction extends StatelessWidget {
       onPressed: onPressed,
       buttonColor: Colors.orange,
       textColor: Colors.black,
+      borderColor: isSelected ? Colors.black : Colors.transparent 
     );
   }
 }
