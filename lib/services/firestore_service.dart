@@ -38,6 +38,30 @@ class FirestoreService {
     }
   }
 
+  static Future<List<Map<String, dynamic>>> getList(String collection) async {
+    try {
+      QuerySnapshot snapshot = await _firestore.collection(collection).get();
+      List<Map<String, dynamic>> data =
+          snapshot.docs.map((doc) {
+            return doc.data() as Map<String, dynamic>;
+          }).toList();
+
+      return data;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<bool> updateDocument(
+      String collection, String docId, Map<String, dynamic> data) async {
+    try {
+      await _firestore.collection(collection).doc(docId).update(data);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   // real-time listener
   static Stream<DocumentSnapshot<Object?>> itemListener(
     String collection,
