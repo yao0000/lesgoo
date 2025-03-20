@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/global.dart';
 import 'package:travel/data/models/user_model.dart';
 import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
-import 'package:travel/services/firestore_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -22,6 +25,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   TextEditingController phoneController = TextEditingController();
   String selectedCountry = "Malaysia";
   String selectedGender = "Prefer not to say";
+
+  XFile? profileImage;
 
   @override
   void initState() {
@@ -45,19 +50,46 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  Future<void> _saveProfile() async {
-    if (_formKey.currentState!.validate() && userId != null) {
-      Map<String, dynamic> updatedData = {
-        "name": nameController.text,
-        "phone": phoneController.text,
-        "country": selectedCountry,
-        "gender": selectedGender,
-      };
+  Future<void> _pickImage() async {
+    final XFile? image = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
 
-      await FirestoreService.post("users", userId!, updatedData);
-      showToast("Profile updated successfully!");
-      Navigator.pop(context);
+    if (image != null) {
+      setState(() {
+        profileImage = image;
+      });
     }
+  }
+
+  Future<void> _saveProfile() async {
+    if (nameController.text.trim().isEmpty ||
+        phoneController.text.trim().isEmpty ||
+        selectedCountry.isEmpty ||
+        selectedGender.isEmpty) {
+      showMessageDialog(
+        context: context,
+        title: "Error",
+        message: "All fields are required",
+      );
+      return;
+    }
+
+    Global.user.uid = userId!;
+    Global.user.name = nameController.text.trim();
+    Global.user.country = selectedCountry;
+    Global.user.gender = selectedGender;
+    Global.user.phone = phoneController.text.trim();
+
+    if (profileImage != null) {
+      Global.user.imageUrl = await UserRepository.uploadPhoto(
+        File(profileImage!.path),
+      );
+    }
+
+    await UserRepository.update();
+    showToast("Profile updated successfully!");
+    Navigator.pop(context);
   }
 
   @override
@@ -82,13 +114,55 @@ class _EditProfilePageState extends State<EditProfilePage> {
               Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.blue[900],
-                    child: Text("[User Pic]", style: TextStyle(color: Colors.white)),
-                  ),
+                  (Global.user.imageUrl.isEmpty)
+                      ? CircleAvatar(
+                        radius: 50,
+                        backgroundColor: AppColors.navyBlue,
+                      )
+                      : ClipOval(
+                        child:
+                            profileImage == null
+                                ? Image.network(
+                                  Global.user.imageUrl,
+                                  height: 120,
+                                  width: 120,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (
+                                    context,
+                                    child,
+                                    loadingProgress,
+                                  ) {
+                                    if (loadingProgress == null) return child;
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  },
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(
+                                      Icons.broken_image,
+                                      size: 50,
+                                      color: Colors.grey,
+                                    );
+                                  },
+                                )
+                                : Image.file(
+                                  File(
+                                    profileImage!.path,
+                                  ), // Convert XFile to File
+                                  height: 120,
+                                  width: 120,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return const Icon(
+                                      Icons.broken_image,
+                                      size: 50,
+                                      color: Colors.grey,
+                                    );
+                                  },
+                                ),
+                      ),
                   GestureDetector(
-                    onTap: () => showToast("Change Picture Clicked"),
+                    onTap: () => _pickImage(),
                     child: Container(
                       padding: EdgeInsets.all(5),
                       decoration: BoxDecoration(
@@ -102,8 +176,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               SizedBox(height: 15),
 
-              InputText(label: "Name", hintText: "", controller: nameController),
-              InputText(label: "Phone", hintText: "", controller: phoneController, keyboardType: TextInputType.phone),
+              InputText(
+                label: "Name",
+                hintText: "",
+                controller: nameController,
+              ),
+              InputText(
+                label: "Phone",
+                hintText: "",
+                controller: phoneController,
+                keyboardType: TextInputType.phone,
+              ),
               DropdownSelector(
                 label: "Country",
                 value: selectedCountry,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/global.dart';
 import 'package:travel/data/models/user_model.dart';
 import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
@@ -32,7 +33,7 @@ class ProfilePage extends StatelessWidget {
       backgroundColor: AppColors.bgColor,
       appBar: TravellerAppBar(title: "Profile"),
       body: StreamBuilder<UserModel?>(
-        stream: UserRepository.getUserStream(userUid), 
+        stream: UserRepository.getUserStream(userUid),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -50,15 +51,32 @@ class ProfilePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: AppColors.navyBlue,
-                    /*decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.circular(10),
-                      color: AppColors.navyBlue,
-                    ),*/
-                  ),
+                  (Global.user.imageUrl.isEmpty)
+                      ? CircleAvatar(
+                        radius: 50,
+                        backgroundColor: AppColors.navyBlue,
+                      )
+                      : ClipOval(
+                        child: Image.network(
+                          Global.user.imageUrl,
+                          height: 120,
+                          width: 120,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(
+                              Icons.broken_image,
+                              size: 50,
+                              color: Colors.grey,
+                            );
+                          },
+                        ),
+                      ),
                   const SizedBox(height: 10),
                   Text(
                     user.username,
@@ -76,7 +94,10 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  ButtonAction(label: "Edit Profile", onPressed: () => GoRouter.of(context).push('/profileEdit')),
+                  ButtonAction(
+                    label: "Edit Profile",
+                    onPressed: () => GoRouter.of(context).push('/profileEdit'),
+                  ),
 
                   const SizedBox(height: 20),
 

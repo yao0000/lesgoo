@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/repositories/restaurant_repository.dart';
+import 'package:travel/ui/widgets/card_holder.dart';
 import 'package:travel/ui/widgets/icon_category.dart';
+import 'package:travel/data/repositories/hotel_repository.dart';
 
 class DiscoverPage extends StatelessWidget {
   const DiscoverPage({super.key});
@@ -11,41 +15,85 @@ class DiscoverPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.bgColor,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            
-            const Text(
-              "What would you like to find?",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 15),
+      body: Padding(
+        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "What would you like to find?",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 15),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconCategory(iconPath: 'assets/img/Flights.png', label: "Flights", onTap: () => print('Flights is clicked')),
-                IconCategory(iconPath: 'assets/img/Hotels.png', label: "Hotels", onTap: () => print('Hotels is clicked')),
-                IconCategory(iconPath: 'assets/img/Restaurant.png', label: "Food", onTap: () => print('Food is clicked')),
-                IconCategory(iconPath: 'assets/img/Car.png', label: "Cars", onTap: () => print('cars is clicked')),
-              ],
-            ),
-            const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconCategory(
+                    iconPath: 'assets/img/Flights.png',
+                    label: "Flights",
+                    onTap: () => context.push('/flightSearch'),
+                  ),
+                  IconCategory(
+                    iconPath: 'assets/img/Hotels.png',
+                    label: "Hotels",
+                    onTap: () => context.push('/list/hotels'),
+                  ),
+                  IconCategory(
+                    iconPath: 'assets/img/Restaurant.png',
+                    label: "Food",
+                    onTap: () => context.push('/list/restaurants'),
+                  ),
+                  IconCategory(
+                    iconPath: 'assets/img/Car.png',
+                    label: "Cars",
+                    onTap: () => context.push('/list/cars'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
 
-            
-            _buildSectionTitle("Popular Hotels"),
-            const SizedBox(height: 10),
-            _buildHorizontalList(screenWidth),
+              _buildSectionTitle("Popular Hotels"),
+              const SizedBox(height: 10),
+              //_buildHorizontalList(screenWidth),
+              FutureBuilder<List<dynamic>?>(
+                future: HotelRepository.getList(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text("No data found"));
+                  } else {
+                    return _buildHorizontalList(screenWidth, snapshot.data!);
+                  }
+                },
+              ),
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            
-            _buildSectionTitle("Popular Restaurant"),
-            const SizedBox(height: 10),
-            _buildHorizontalList(screenWidth),
-          ],
+              _buildSectionTitle("Popular Restaurant"),
+              const SizedBox(height: 10),
+              //_buildHorizontalList(screenWidth),
+              FutureBuilder<List<dynamic>?>(
+                future: RestaurantRepository.getList(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Error: ${snapshot.error}"));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text("No data found"));
+                  } else {
+                    return _buildHorizontalList(screenWidth, snapshot.data!);
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -69,19 +117,19 @@ class DiscoverPage extends StatelessWidget {
   }
 
   // Horizontal List
-  Widget _buildHorizontalList(double screenWidth) {
+  Widget _buildHorizontalList<T>(double screenWidth, List<T> list) {
     return SizedBox(
       height: 180,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: 4,
-        itemBuilder: (context, index) => _buildCard(screenWidth),
+        itemCount: list.length,
+        itemBuilder: (context, index) => CardHolder(screenWidth: screenWidth * 0.6, item: list[index]),
       ),
     );
   }
 
   // Card Widget
-  Widget _buildCard(double screenWidth) {
+  /*Widget _buildCard<T>(double screenWidth, T item) {
     return Container(
       width: screenWidth * 0.6,
       margin: const EdgeInsets.only(right: 15),
@@ -97,25 +145,53 @@ class DiscoverPage extends StatelessWidget {
               width: double.infinity,
               color: Colors.grey[300], // Placeholder for image
               alignment: Alignment.center,
-              child: const Text("[Pictures]"),
+              child: Image.network(
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Google_Images_2015_logo.svg/800px-Google_Images_2015_logo.svg.png',
+                height: 120,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const Center(child: CircularProgressIndicator());
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.broken_image,
+                    size: 50,
+                    color: Colors.grey,
+                  );
+                },
+              ),
             ),
           ),
           const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
+            children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("[Places]", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("[Ratings]", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text(
+                    getObject(item, 'place'),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    getObject(item, 'rating'),
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text("[Price]", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("Per person", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                  Text(
+                    getObject(item, 'price'),
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    "Per person",
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  ),
                 ],
               ),
             ],
@@ -123,5 +199,9 @@ class DiscoverPage extends StatelessWidget {
         ],
       ),
     );
-  }
+  }*/
+
+
+
 }
+
