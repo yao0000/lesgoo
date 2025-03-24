@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/models/restaurant_model.dart';
+import 'package:travel/data/models/function.dart';
 
 class CardHolder extends StatelessWidget {
   final dynamic item;
@@ -13,7 +14,7 @@ class CardHolder extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/details');
+        context.push('/details', extra: item);
       },
       child: Container(
         width: screenWidth,
@@ -31,7 +32,7 @@ class CardHolder extends StatelessWidget {
                 color: Colors.grey[300],
                 alignment: Alignment.center,
                 child: Image.network(
-                  _getAttribute('imageUrl'),
+                  getAttribute(item, 'imageUrl'),
                   height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,

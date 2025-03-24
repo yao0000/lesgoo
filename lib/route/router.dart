@@ -18,12 +18,24 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(path: '/signup', builder: (context, state) => const SignUpScreen()),
-    GoRoute(path: '/resetPassword', builder: (context, state) => const ForgotPasswordScreen()),
+    GoRoute(
+      path: '/resetPassword',
+      builder: (context, state) => const ForgotPasswordScreen(),
+    ),
 
     GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
-    GoRoute(path: '/profileEdit', builder: (context, state) => const EditProfilePage()),
-    GoRoute(path: '/flightSearch', builder: (context, state) => const FlightSearchScreen()),
-    GoRoute(path: '/paymentSuccess', builder: (context, state) => const PaymentSuccessScreen()),
+    GoRoute(
+      path: '/profileEdit',
+      builder: (context, state) => const EditProfilePage(),
+    ),
+    GoRoute(
+      path: '/flightSearch',
+      builder: (context, state) => const FlightSearchScreen(),
+    ),
+    GoRoute(
+      path: '/paymentSuccess',
+      builder: (context, state) => const PaymentSuccessScreen(),
+    ),
 
     GoRoute(
       path: '/list/:type',
@@ -32,16 +44,32 @@ final GoRouter router = GoRouter(
         return ListScreen(type: type);
       },
     ),
-    GoRoute(path: '/details', builder: (context, state) => const DetailsScreen()),
-    GoRoute(path: '/hotelBooking', builder: (context, state) => const HotelBookingScreen()),
+    GoRoute(
+      path: '/details',
+      builder: (context, state) {
+        final item = state.extra as dynamic;
+        return DetailsScreen(item: item);
+      },
+    ),
+    GoRoute(
+      path: '/hotelBooking',
+      builder: (context, state) {
+        final item = state.extra;
+        return HotelBookingScreen(item: item);},
+    ),
 
-  // for admin
-    GoRoute(path:'/adminHome', builder: (context, state) => const AdminHomeScreen()),
-    
-    GoRoute(path: '/itemAdd/:type', builder: (context, state){
+    // for admin
+    GoRoute(
+      path: '/adminHome',
+      builder: (context, state) => const AdminHomeScreen(),
+    ),
+
+    GoRoute(
+      path: '/itemAdd/:type',
+      builder: (context, state) {
         final type = state.pathParameters['type']!;
         return ItemAddScreen(type: type);
-      },)
-
+      },
+    ),
   ],
 );

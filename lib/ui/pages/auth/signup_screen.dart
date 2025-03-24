@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/models/index.dart';
+import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 
@@ -30,6 +32,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _emailController.text.trim(),
       _passwordController.text.trim(),
     );
+
+    if (success) {
+      UserModel user = UserModel(uid: AuthService.getCurrentUser()!.uid, username: _nameController.text.trim(), name: '', email: _emailController.text.trim(), country: 'Malaysia', gender: 'Prefer not to say', phone: '', role: 'user');
+      await UserRepository.save(user.uid, user.toJson());
+    }
+
     Navigator.pop(context);
 
     if (!success) {

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class HotelModel {
   final String uid;
   final String about;
@@ -5,6 +7,10 @@ class HotelModel {
   final String name;
   final double price;
   final double rating;
+  final String imageUrl;
+  final String imageFacility;
+
+  final List<String> gallery;
 
   HotelModel({
     required this.uid,
@@ -12,7 +18,10 @@ class HotelModel {
     required this.address,
     required this.name,
     required this.price,
-    required this.rating
+    required this.rating,
+    required this.imageFacility,
+    required this.imageUrl,
+    required this.gallery,
   });
 
   factory HotelModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +32,13 @@ class HotelModel {
       name: json['name'] ?? '',
       price: (json['price'] ?? 0.00).toDouble(),
       rating: (json['rating'] ?? 0.0).toDouble(),
+      imageFacility: json['imageFacility'] ?? '',
+      imageUrl: json['imageUrl'] ?? '',
+      gallery:
+          (json['gallery'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
     );
   }
 
@@ -33,6 +49,52 @@ class HotelModel {
       'name': name,
       'price': price,
       'rating': rating,
+    };
+  }
+}
+
+class HotelBookingModel {
+  String hotelUid;
+  String userUid;
+  DateTime startDate;
+  DateTime endDate;
+  int roomCount;
+  double price;
+  DateTime createdTime;
+
+  HotelBookingModel({
+    required this.hotelUid,
+    required this.userUid,
+    required this.startDate,
+    required this.endDate,
+    required this.roomCount,
+    required this.price,
+    DateTime? createdTime,
+  }) : createdTime = createdTime ?? DateTime.now();
+
+  factory HotelBookingModel.fromJson(Map<String, dynamic> json) {
+    return HotelBookingModel(
+      hotelUid: json['hotelUid'] as String,
+      userUid: json['userUid'] as String,
+      startDate: (json['startDate'] as Timestamp).toDate(),
+      endDate: (json['endDate'] as Timestamp).toDate(),
+      roomCount: json['roomCount'] as int,
+      price: (json['price'] as num).toDouble(),
+      createdTime: json['createdTime'] != null
+          ? (json['createdTime'] as Timestamp).toDate()
+          : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'hotelUid': hotelUid,
+      'userUid': userUid,
+      'startDate': Timestamp.fromDate(startDate), 
+      'endDate': Timestamp.fromDate(endDate),
+      'roomCount': roomCount,
+      'price': price,
+      'createdTime': Timestamp.fromDate(createdTime),
     };
   }
 }

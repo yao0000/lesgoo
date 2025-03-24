@@ -14,7 +14,7 @@ class UserRepository {
 
   static Future<void> save(String id, Map<String, dynamic> data) async {
     try {
-      await FirestoreService.post(collection, id, data);
+      await FirestoreService.post(collection, AuthService.getCurrentUser()!.uid, data);
     } catch (e) {
       showToast(e.toString());
     }

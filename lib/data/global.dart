@@ -10,7 +10,8 @@ class Global {
   static final UserModel user = UserModel(uid: '', username: '', name: '', email: '', country: '', gender: '', phone: '', role: 'user');
 
   static Future<void> loadUserInfo() async {
-    UserModel? currentUser = await UserRepository.getUser(AuthService.getCurrentUser()!.uid);
+    String userUid = AuthService.getCurrentUser()!.uid;
+    UserModel? currentUser = await UserRepository.getUser(userUid);
     user.uid = currentUser!.uid;
     user.username = currentUser.username;
     user.name = currentUser.name;

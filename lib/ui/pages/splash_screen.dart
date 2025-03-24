@@ -21,11 +21,11 @@ class _SplashScreenState extends State<SplashScreen> {
       if (mounted) {
         if (AuthService.isUserLoggedIn()) {
           await Global.loadUserInfo();
-          if (Global.user.role == 'user') {
-            context.go('/home');
+          if (Global.user.role == 'admin') {
+            context.go('/adminHome');
           }
           else {
-            context.go('/adminHome');
+            context.go('/home');
           }
         } else {
           context.go('/login');

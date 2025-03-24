@@ -101,18 +101,9 @@ class DiscoverPage extends StatelessWidget {
 
   // Section Title
   Widget _buildSectionTitle(String title) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "See All",
-          style: TextStyle(fontSize: 14, color: Colors.blue.shade700),
-        ),
-      ],
+    return Text(
+      title,
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
     );
   }
 
@@ -123,7 +114,9 @@ class DiscoverPage extends StatelessWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: list.length,
-        itemBuilder: (context, index) => CardHolder(screenWidth: screenWidth * 0.6, item: list[index]),
+        itemBuilder:
+            (context, index) =>
+                CardHolder(screenWidth: screenWidth * 0.6, item: list[index]),
       ),
     );
   }
@@ -200,8 +193,4 @@ class DiscoverPage extends StatelessWidget {
       ),
     );
   }*/
-
-
-
 }
-

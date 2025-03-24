@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:travel/data/models/index.dart';
+import 'package:travel/data/repositories/hotel_repository.dart';
+import 'package:travel/services/firebase_auth_service.dart';
+import 'package:travel/ui/widgets/widgets.dart';
+import 'package:travel/data/models/function.dart';
 
 class HotelBookingScreen extends StatefulWidget {
-  const HotelBookingScreen({super.key});
+  final dynamic item;
+
+  const HotelBookingScreen({super.key, required this.item});
 
   @override
   State<StatefulWidget> createState() => _HotelBookingScreenState();
@@ -10,7 +17,47 @@ class HotelBookingScreen extends StatefulWidget {
 class _HotelBookingScreenState extends State<HotelBookingScreen> {
   DateTime? startDate;
   DateTime? endDate;
+  TimeOfDay? selectedTime;
+
   int roomCount = 1;
+
+  Future<void> _booking() async {
+    var item = widget.item;
+    if (item is Map) {
+      item = item.entries.first.value;
+    }
+
+    bool isSuccess = false;
+    if (item is HotelModel) {
+      isSuccess = await _postHotelBooking(item);
+    } else if (item is RestaurantModel) {}
+
+    if (isSuccess) {
+      showToast("Booking successfully");
+    }
+  }
+
+  Future<bool> _postHotelBooking(dynamic item) async {
+    if (startDate == null || endDate == null) {
+      showMessageDialog(
+        context: context,
+        title: "Error",
+        message: "Date are required",
+      );
+      return false;
+    }
+
+    bool isSuccess = await HotelBookingRepository.post(
+      hotelUid: item.uid.toString(),
+      userUid: AuthService.getCurrentUser()!.uid,
+      startDate: startDate!.toUtc(),
+      endDate: endDate!.toUtc(),
+      roomCount: roomCount,
+      totalPrice: getPriceFormat(item, roomCount),
+    );
+
+    return isSuccess;
+  }
 
   Future<void> _selectDate(BuildContext context, bool isStartDate) async {
     DateTime? picked = await showDatePicker(
@@ -26,6 +73,21 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
         } else {
           endDate = picked;
         }
+      });
+    }
+    if (startDate != null) {
+      print(startDate);
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime ?? TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        selectedTime = picked;
       });
     }
   }
@@ -56,26 +118,7 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Start Date"),
-                      const Text("End Date"),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _buildDatePicker("Start Date", startDate, true),
-                      Icon(Icons.arrow_right_alt),
-                      _buildDatePicker("End Date", endDate, false),
-                    ],
-                  ),
-                ],
-              ),
+              child: _buildPeriodSection(),
             ),
             SizedBox(height: 20),
             Text(
@@ -86,7 +129,16 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Room"),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Room", style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(
+                      "One room fit\n2 adults and 1 child",
+                      style: TextStyle(color: Colors.black54),
+                    ),
+                  ],
+                ),
                 Row(
                   children: [
                     IconButton(
@@ -123,33 +175,24 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildPriceRow("Room", "[Price]"),
-                  _buildPriceRow("Nights x1", "[Price]"),
+                  _buildPriceRow("Room", getAttribute(widget.item, 'price')),
+                  _buildPriceRow(
+                    "Nights x1",
+                    getPriceFormat(widget.item, roomCount),
+                  ),
                 ],
               ),
             ),
             SizedBox(height: 20),
-            _buildPriceRow("Total Amount", "[Total Price]"),
+            _buildPriceRow(
+              "Total Amount",
+              getPriceFormat(widget.item, roomCount),
+            ),
             SizedBox(height: 30),
             Center(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                onPressed: () {},
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 12,
-                  ),
-                  child: Text(
-                    "Book now!",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+              child: ButtonAction(
+                label: "Book Now!",
+                onPressed: () => _booking(),
               ),
             ),
           ],
@@ -184,7 +227,7 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
 
   Widget _buildPriceRow(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      padding: const EdgeInsets.symmetric(vertical: 4.0).copyWith(right: 10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -192,6 +235,62 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
           Text(value, style: TextStyle(color: Colors.blue)),
         ],
       ),
+    );
+  }
+
+  Widget _buildPeriodSection() {
+    dynamic item = widget.item;
+    if (item is Map) {
+      item = item.entries.first.value;
+    }
+
+    if (item is RestaurantModel) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [const Text("Date"), const Text("Time")],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildDatePicker("Start Date", startDate, true),
+              Icon(Icons.arrow_right_alt),
+              Row(
+                children: [
+                  Icon(Icons.access_time, color: Colors.black54),
+                  const SizedBox(width: 8),
+                  Text(
+                    selectedTime != null
+                        ? selectedTime!.format(context)
+                        : "XX:XX",
+                    style: TextStyle(fontSize: 16, color: Colors.black54),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    // Hotel and Transportation reuse the same panel
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [const Text("Start Date"), const Text("End Date")],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            _buildDatePicker("Start Date", startDate, true),
+            Icon(Icons.arrow_right_alt),
+            _buildDatePicker("End Date", endDate, false),
+          ],
+        ),
+      ],
     );
   }
 }

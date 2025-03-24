@@ -20,6 +20,19 @@ class FirestoreService {
     }
   }
 
+  static Future<bool> insert({
+    required String collection, required Map<String, dynamic> data
+  }) async {
+    try {
+      await _firestore
+          .collection(collection)
+          .add(data);
+      return true;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   static Future<DocumentSnapshot<Object?>> getItem(
     collection,
     String id,
@@ -43,7 +56,9 @@ class FirestoreService {
       QuerySnapshot snapshot = await _firestore.collection(collection).get();
       List<Map<String, dynamic>> data =
           snapshot.docs.map((doc) {
-            return doc.data() as Map<String, dynamic>;
+            Map<String, dynamic> docData = doc.data() as Map<String, dynamic>;
+            docData['uid'] = doc.id;
+            return docData;
           }).toList();
 
       return data;
@@ -53,12 +68,15 @@ class FirestoreService {
   }
 
   static Future<bool> updateDocument(
-      String collection, String docId, Map<String, dynamic> data) async {
+    String collection,
+    String docId,
+    Map<String, dynamic> data,
+  ) async {
     try {
       await _firestore.collection(collection).doc(docId).update(data);
       return true;
     } catch (e) {
-      return false;
+      rethrow;
     }
   }
 

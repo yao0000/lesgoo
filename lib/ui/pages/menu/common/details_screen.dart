@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/models/index.dart';
+import 'package:travel/data/models/restaurant_model.dart';
 import 'package:travel/ui/widgets/widgets.dart';
+import 'package:travel/data/global.dart';
+import 'package:travel/ui/widgets/base/button.dart';
 
 class DetailsScreen extends StatelessWidget {
-  const DetailsScreen({super.key});
+  final dynamic item;
+  const DetailsScreen({super.key, required this.item});
 
-  String _detailsRouting(dynamic item) {
-    if (item == HotelModel) {
+  String _detailsRouting() {
+    if (item is HotelModel) {
       return "/hotelBooking";
     }
-    return "/";
+    return "/hotelBooking";
   }
 
   @override
@@ -33,12 +38,12 @@ class DetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: AppColors.bgColor, // Background color for image
+                color: AppColors.bgColor, 
                 width: double.infinity,
                 padding: EdgeInsets.only(bottom: 10),
                 child: Center(
                   child: Image.network(
-                    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqj6LtDOZm-APHiUFuSE2Cr1In65Vvjzr3w8Z8QE2QvyQvgY-MhZVkXD68g5lQe156DP4&usqp=CAU',
+                    _getAttribute('imageUrl'),
                     height: 150,
                     fit: BoxFit.cover,
                   ),
@@ -53,18 +58,23 @@ class DetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'place',
+                          _getAttribute('name'),
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.w900,
                           ),
                         ),
-                        Text(
-                          'price',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        Column(
+                          children: [
+                            Text(
+                              _getAttribute('price'),
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            _sectionContent(_getUnit()),
+                          ],
                         ),
                       ],
                     ),
@@ -72,56 +82,64 @@ class DetailsScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.star, color: Colors.yellow),
                         SizedBox(width: 5),
-                        Text('rating', style: TextStyle(color: Colors.grey)),
+                        _sectionContent(_getAttribute('rating')),
                       ],
                     ),
                     SizedBox(height: 10),
                     Text(
-                      "About",
+                      _getAttribute('rate'),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColors.navyBlue,
                       ),
                     ),
-                    Text('about', style: TextStyle(color: Colors.black54)),
+                    _sectionLabel("About"),
+                    _sectionContent(_getAttribute('about')),
                     SizedBox(height: 10),
-                    Text(
-                      "Gallery",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    if (item is HotelModel) ...[
+                      _sectionLabel("Facility"),
+                      Container(
+                        color: Colors.white,
+                        width: double.infinity,
+                        padding: EdgeInsets.only(bottom: 10, top: 10),
+                        child: Center(
+                          child: Image.network(
+                            _getAttribute('imageFacility'),
+                            height: 150,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
+                    SizedBox(height: 10),
+                    _sectionLabel("Gallery"),
                     SizedBox(height: 5),
-                    /*SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: gallery.map((img) => Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Image.network(img, width: 80, height: 80, fit: BoxFit.cover),
-                      )).toList(),
-                    ),
-                  ),*/
-                    SizedBox(height: 10),
-                    Text(
-                      "Address",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.navyBlue,
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children:
+                            (_getAttribute('gallery') as List<dynamic>?)?.map((
+                              img,
+                            ) {
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Image.network(
+                                  img.toString(),
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              );
+                            }).toList() ??
+                            [], 
                       ),
                     ),
-                    Text('address', style: TextStyle(color: Colors.black54)),
                     SizedBox(height: 10),
-                    Text(
-                      "Rate Us",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.navyBlue,
-                      ),
-                    ),
+                    _sectionLabel("Address"),
+                    _sectionContent(_getAttribute('address')),
+                    SizedBox(height: 10),
+                    _sectionLabel("Rate Us"),
                     Row(
                       children: List.generate(
                         5,
@@ -129,7 +147,24 @@ class DetailsScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Center(child: ButtonAction(label: "Choose your date", onPressed: () => GoRouter.of(context).push(_detailsRouting(null)))),
+                    Center(
+                      child:
+                          Global.user.role == "user"
+                              ? ButtonAction(
+                                label: "Choose your date",
+                                onPressed:
+                                    () => GoRouter.of(context).push(
+                                      _detailsRouting(),
+                                      extra: {item: item},
+                                    ),
+                              )
+                              : Button(
+                                text: "Delete",
+                                onPressed: () {},
+                                buttonColor: Colors.red,
+                                textColor: Colors.black,
+                              ),
+                    ),
                   ],
                 ),
               ),
@@ -138,5 +173,76 @@ class DetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _sectionLabel(String text) {
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black,
+      ),
+    );
+  }
+
+  Widget _sectionContent(String text) {
+    return Text(text, style: TextStyle(color: Colors.black54));
+  }
+
+  String _getUnit() {
+    if (item is HotelModel) {
+      return "1 Night";
+    } else if (item is RestaurantModel) {
+      return "1 Pax";
+    }
+    return "";
+  }
+
+  dynamic _getAttribute(String key) {
+    final currencyFormat = NumberFormat.currency(
+      locale: "en_US",
+      symbol: "\$",
+      decimalDigits: 2,
+    );
+
+    if (item is HotelModel) {
+      switch (key) {
+        case "name":
+          return item.name.toString();
+        case "address":
+          return item.address.toString();
+        case "rating":
+          return item.rating.toString();
+        case "price":
+          return currencyFormat.format(item.price);
+        case "about":
+          return item.about.toString();
+        case "imageFacility":
+          return item.imageFacility.toString();
+        case "imageUrl":
+          return item.imageUrl.toString();
+        case "gallery":
+          return item.gallery;
+      }
+    } else if (item is RestaurantModel) {
+      switch (key) {
+        case "name":
+          return item.name.toString();
+        case "imageUrl":
+          return item.imageUrl.toString();
+        case "address":
+          return item.address.toString();
+        case "rating":
+          return item.rating.toString();
+        case "price":
+          return currencyFormat.format(item.price);
+        case "about":
+          return item.about.toString();
+        case "gallery":
+          return item.gallery;
+      }
+    }
+    return "";
   }
 }

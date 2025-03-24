@@ -17,7 +17,7 @@ class CardObject extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/details');
+        context.push('/details', extra: item);
       },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -29,7 +29,7 @@ class CardObject extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                height: 100,
+                height: 200,
                 color: Colors.grey[300],
                 child: Image.network(
                   _getAttribute('imageUrl'),
@@ -103,6 +103,8 @@ class CardObject extends StatelessWidget {
           {
             return currencyFormat.format(item.price);
           }
+        case "imageUrl":
+          return item.imageUrl.toString();
         default:
           {
             return "";
