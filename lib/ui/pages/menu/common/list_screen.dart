@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/data/global.dart';
+import 'package:travel/data/repositories/car_repository.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/data/repositories/restaurant_repository.dart';
 import 'package:travel/ui/pages/menu/common/filter_drawer.dart';
@@ -77,13 +78,11 @@ class _ListScreen extends State<ListScreen> {
   Future<List<dynamic>?> getFutureList() {
     switch (widget.type) {
       case "hotels":
-        {
           return HotelRepository.getList();
-        }
+      case "cars":
+        return CarRepository.getList();
       default:
-        {
           return RestaurantRepository.getList();
-        }
     }
   }
 

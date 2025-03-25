@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:travel/data/models/hotel_model.dart';
 import 'package:travel/services/firebase_storage_service.dart';
 import 'package:travel/services/firestore_service.dart';

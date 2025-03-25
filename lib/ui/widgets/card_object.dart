@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-import 'package:travel/data/models/index.dart';
-import 'package:travel/data/models/restaurant_model.dart';
+import 'package:travel/data/models/function.dart';
 
 class CardObject extends StatelessWidget {
   final dynamic item;
@@ -32,7 +31,7 @@ class CardObject extends StatelessWidget {
                 height: 200,
                 color: Colors.grey[300],
                 child: Image.network(
-                  _getAttribute('imageUrl'),
+                  getAttribute(item, 'imageUrl'),
                   height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -54,11 +53,11 @@ class CardObject extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    _getAttribute('name'),
+                    getAttribute(item, 'name'),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    _getAttribute('price'),
+                    getAttribute(item, 'price'),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -68,11 +67,11 @@ class CardObject extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    _getAttribute(''),
+                    getAttribute(item, 'field3'),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    _getAttribute('rating'),
+                    getAttribute(item, 'field4'),
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -82,58 +81,5 @@ class CardObject extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _getAttribute(String key) {
-    if (item is HotelModel) {
-      switch (key) {
-        case "name":
-          {
-            return item.name.toString();
-          }
-        case "address":
-          {
-            return "${item.address.substring(0, item.address.length >= 20 ? 20 : item.address.length)}...";
-          }
-        case "rating":
-          {
-            return item.rating.toString();
-          }
-        case "price":
-          {
-            return currencyFormat.format(item.price);
-          }
-        case "imageUrl":
-          return item.imageUrl.toString();
-        default:
-          {
-            return "";
-          }
-      }
-    } else if (item is RestaurantModel) {
-      switch (key) {
-        case "name":
-          {
-            return item.name.toString();
-          }
-        case "address":
-          {
-            return "${item.address.substring(0, item.address.length >= 20 ? 20 : item.address.length)}...";
-          }
-        case "rating":
-          {
-            return item.rating.toString();
-          }
-        case "price":
-          {
-            return currencyFormat.format(item.price);
-          }
-        case "imageUrl":
-          {
-            return item.imageUrl.toString();
-          }
-      }
-    }
-    return "";
   }
 }

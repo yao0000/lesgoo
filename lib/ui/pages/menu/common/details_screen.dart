@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/models/restaurant_model.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 import 'package:travel/data/global.dart';
 import 'package:travel/ui/widgets/base/button.dart';
+import 'package:travel/data/models/function.dart';
 
 class DetailsScreen extends StatelessWidget {
   final dynamic item;
@@ -38,12 +40,12 @@ class DetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: AppColors.bgColor, 
+                color: AppColors.bgColor,
                 width: double.infinity,
                 padding: EdgeInsets.only(bottom: 10),
                 child: Center(
                   child: Image.network(
-                    _getAttribute('imageUrl'),
+                    getAttribute(item, 'imageUrl'),
                     height: 150,
                     fit: BoxFit.cover,
                   ),
@@ -58,7 +60,7 @@ class DetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          _getAttribute('name'),
+                          getAttribute(item, 'name'),
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.w900,
@@ -67,7 +69,7 @@ class DetailsScreen extends StatelessWidget {
                         Column(
                           children: [
                             Text(
-                              _getAttribute('price'),
+                              getAttribute(item, 'price'),
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
@@ -78,11 +80,14 @@ class DetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    if (item is CarModel)
+                      _sectionContent(getAttribute(item, 'plate')),
                     Row(
                       children: [
-                        Icon(Icons.star, color: Colors.yellow),
+                        if (item is! CarModel)
+                          Icon(Icons.star, color: Colors.yellow),
                         SizedBox(width: 5),
-                        _sectionContent(_getAttribute('rating')),
+                        _sectionContent(getAttribute(item, 'rating')),
                       ],
                     ),
                     SizedBox(height: 10),
@@ -94,9 +99,11 @@ class DetailsScreen extends StatelessWidget {
                         color: AppColors.navyBlue,
                       ),
                     ),
-                    _sectionLabel("About"),
-                    _sectionContent(_getAttribute('about')),
-                    SizedBox(height: 10),
+                    if (item is! CarModel) ...[
+                      _sectionLabel("About"),
+                      _sectionContent(getAttribute(item, 'about')),
+                      SizedBox(height: 10),
+                    ],
                     if (item is HotelModel) ...[
                       _sectionLabel("Facility"),
                       Container(
@@ -111,41 +118,47 @@ class DetailsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10),
                     ],
-                    SizedBox(height: 10),
                     _sectionLabel("Gallery"),
                     SizedBox(height: 5),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children:
-                            (_getAttribute('gallery') as List<dynamic>?)?.map((
-                              img,
-                            ) {
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Image.network(
-                                  img.toString(),
-                                  width: 80,
-                                  height: 80,
-                                  fit: BoxFit.cover,
-                                ),
-                              );
-                            }).toList() ??
-                            [], 
+                            (getAttribute(item, 'gallery') as List<dynamic>?)
+                                ?.map((img) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Image.network(
+                                      img.toString(),
+                                      width: 80,
+                                      height: 80,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  );
+                                })
+                                .toList() ??
+                            [],
                       ),
                     ),
                     SizedBox(height: 10),
-                    _sectionLabel("Address"),
-                    _sectionContent(_getAttribute('address')),
+                    _sectionLabel(
+                      item is CarModel ? "Pick Up Point:" : "Address",
+                    ),
+                    _sectionContent(getAttribute(item, 'address')),
                     SizedBox(height: 10),
-                    _sectionLabel("Rate Us"),
+                    if (item is CarModel) ...[
+                      _sectionLabel("Pick Up Time: "),
+                      _sectionContent(getAttribute(item, 'time')),
+                    ],
+                    /*_sectionLabel("Rate Us"),
                     Row(
                       children: List.generate(
                         5,
                         (index) => Icon(Icons.star, color: Colors.black),
                       ),
-                    ),
+                    ),*/
                     SizedBox(height: 20),
                     Center(
                       child:
@@ -195,6 +208,8 @@ class DetailsScreen extends StatelessWidget {
       return "1 Night";
     } else if (item is RestaurantModel) {
       return "1 Pax";
+    } else if (item is CarModel) {
+      return "1 Day";
     }
     return "";
   }

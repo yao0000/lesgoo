@@ -6,6 +6,7 @@ import 'package:travel/data/models/user_model.dart';
 import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
+import 'package:restart_app/restart_app.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -21,7 +22,8 @@ class ProfilePage extends StatelessWidget {
       showLoadingDialog(context, "sign out in progress...");
       await AuthService.signOut();
       Navigator.pop(context);
-      context.go('/login');
+      //context.go('/login');
+      Restart.restartApp();
     }
   }
 

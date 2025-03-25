@@ -226,6 +226,15 @@ final List<Map<String, dynamic>> hotels = [
   },*/
 ];
 
+final List<Map<String, dynamic>> cars = [
+  {
+    'name': "Toyota Corolla",
+    'price': 50.0,
+    'seats': 5,
+
+  }
+];
+
 void upload() async {
   for (var item in hotels) {
     await FirebaseFirestore.instance.collection('hotels').add(item);

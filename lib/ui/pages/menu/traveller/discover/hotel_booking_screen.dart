@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
@@ -19,7 +20,7 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
   DateTime? endDate;
   TimeOfDay? selectedTime;
 
-  int roomCount = 1;
+  int count = 1;
 
   Future<void> _booking() async {
     var item = widget.item;
@@ -52,8 +53,8 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
       userUid: AuthService.getCurrentUser()!.uid,
       startDate: startDate!.toUtc(),
       endDate: endDate!.toUtc(),
-      roomCount: roomCount,
-      totalPrice: getPriceFormat(item, roomCount),
+      roomCount: count,
+      totalPrice: getPriceFormat(item, count),
     );
 
     return isSuccess;
@@ -121,43 +122,53 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
               child: _buildPeriodSection(),
             ),
             SizedBox(height: 20),
-            Text(
-              "Who is travelling?",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
+            Text(_getTitle(), style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("Room", style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(
-                      "One room fit\n2 adults and 1 child",
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  ],
-                ),
+                if (widget.item.entries.first.value is HotelModel)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Room",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "One room fit\n2 adults and 1 child",
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                    ],
+                  ),
+                if (widget.item.entries.first.value is! HotelModel)
+                  Row(
+                    children: [
+                      Text(
+                        _getUnit(),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
                 Row(
                   children: [
                     IconButton(
                       icon: Icon(Icons.remove_circle_outline),
                       onPressed:
-                          roomCount > 1
+                          count > 1
                               ? () {
                                 setState(() {
-                                  roomCount--;
+                                  count--;
                                 });
                               }
                               : null,
                     ),
-                    Text("$roomCount"),
+                    Text("$count"),
                     IconButton(
                       icon: Icon(Icons.add_circle_outline),
                       onPressed: () {
                         setState(() {
-                          roomCount++;
+                          count++;
                         });
                       },
                     ),
@@ -166,28 +177,9 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
               ],
             ),
             SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildPriceRow("Room", getAttribute(widget.item, 'price')),
-                  _buildPriceRow(
-                    "Nights x1",
-                    getPriceFormat(widget.item, roomCount),
-                  ),
-                ],
-              ),
-            ),
+            _sectionDetails(),
             SizedBox(height: 20),
-            _buildPriceRow(
-              "Total Amount",
-              getPriceFormat(widget.item, roomCount),
-            ),
+            _buildPriceRow("Total Amount", getPriceFormat(widget.item, count)),
             SizedBox(height: 30),
             Center(
               child: ButtonAction(
@@ -292,5 +284,73 @@ class _HotelBookingScreenState extends State<HotelBookingScreen> {
         ),
       ],
     );
+  }
+
+  Widget _sectionDetails() {
+    dynamic item = widget.item;
+    if (item is Map) {
+      item = item.entries.first.value;
+    }
+
+    return Container(
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (item is HotelModel) ...[
+            _buildPriceRow("Room", getAttribute(widget.item, 'price')),
+            _buildPriceRow('Nights', count.toString()),
+          ],
+          if (item is RestaurantModel) ...[
+            _buildPriceRow("Price per pax", getAttribute(widget.item, 'price')),
+            _buildPriceRow('Number of pax', count.toString()),
+          ],
+          if (item is CarModel) ...[
+            _buildPriceRow('Car Type', getAttribute(item, 'name')),
+            _buildPriceRow('Car Plate', getAttribute(item, 'plate')),
+            _buildPriceRow('Days', count.toString()),
+            _buildPriceRow('Price', getAttribute(widget.item, 'price')),
+          ]
+        ],
+      ),
+    );
+  }
+
+  String _getUnit() {
+    dynamic item = widget.item;
+    if (item is Map) {
+      item = item.entries.first.value;
+    }
+
+    if (item is HotelModel) {
+      return "Nights";
+    } else if (item is RestaurantModel) {
+      return "Number of pax";
+    } else if (item is CarModel) {
+      return "Days";
+    } else {
+      return "";
+    }
+  }
+
+  String _getTitle() {
+    dynamic item = widget.item;
+    if (item is Map) {
+      item = item.entries.first.value;
+    }
+
+    if (item is HotelModel) {
+      return "Who is travelling?";
+    } else if (item is RestaurantModel) {
+      return "Who is dining?";
+    } else if (item is CarModel) {
+      return "How many days your rent?";
+    } else {
+      return "";
+    }
   }
 }
