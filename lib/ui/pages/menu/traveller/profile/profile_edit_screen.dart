@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/global.dart';
 import 'package:travel/data/models/user_model.dart';
+import 'package:travel/data/repositories/settings_repository.dart';
 import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
@@ -23,6 +24,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   String? userId;
   TextEditingController nameController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  List<String> countryList = [];
   String selectedCountry = "Malaysia";
   String selectedGender = "Prefer not to say";
 
@@ -31,6 +33,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   @override
   void initState() {
     super.initState();
+    _loadCountries();
     _loadUserData();
   }
 
@@ -48,6 +51,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
         });
       }
     }
+  }
+
+  Future<void> _loadCountries() async {
+    List<String> countries = await SettingsRepository.getCountryList();
+    setState(() {
+      countryList = countries;
+    });
   }
 
   Future<void> _pickImage() async {
@@ -190,7 +200,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               DropdownSelector(
                 label: "Country",
                 value: selectedCountry,
-                items: ["Malaysia", "USA", "UK", "Other"],
+                items: countryList,
                 onChanged: (value) => setState(() => selectedCountry = value!),
               ),
               DropdownSelector(

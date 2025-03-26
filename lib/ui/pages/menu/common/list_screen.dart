@@ -7,6 +7,7 @@ import 'package:travel/data/repositories/restaurant_repository.dart';
 import 'package:travel/ui/pages/menu/common/filter_drawer.dart';
 import 'package:travel/ui/widgets/button_action.dart';
 import 'package:travel/ui/widgets/card_object.dart';
+import 'package:travel/ui/widgets/widgets.dart';
 
 class ListScreen extends StatefulWidget {
   final String type;
@@ -18,6 +19,9 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreen extends State<ListScreen> {
+
+  final TextEditingController _searchController = TextEditingController();
+
   Map<String, bool> filterState = {
     'desc': false,
     'asc': false,
@@ -78,11 +82,11 @@ class _ListScreen extends State<ListScreen> {
   Future<List<dynamic>?> getFutureList() {
     switch (widget.type) {
       case "hotels":
-          return HotelRepository.getList();
+        return HotelRepository.getList();
       case "cars":
         return CarRepository.getList();
       default:
-          return RestaurantRepository.getList();
+        return RestaurantRepository.getList();
     }
   }
 
@@ -115,6 +119,15 @@ class _ListScreen extends State<ListScreen> {
                   )
                   .toList();
     });
+
+    if (_searchController.text.trim().isNotEmpty) {
+      String query = _searchController.text.trim();
+      list = list!
+          .where((item) =>
+              item.name.toLowerCase().contains(query.toLowerCase()) ||
+              item.address.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    }
   }
 
   @override
@@ -134,16 +147,55 @@ class _ListScreen extends State<ListScreen> {
             context.pop();
           },
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            onPressed: () => openFilterDrawer(context),
-          ),
-        ],
       ),
       backgroundColor: Colors.blue[100],
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                      ), // Search Icon
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          onChanged: (value) { sortList(); },
+                          decoration: const InputDecoration(
+                            hintText: 'Search by name & location...',
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(vertical: 15),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.filter_list, color: Colors.grey),
+                        onPressed: () => openFilterDrawer(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child:
                 list == null
