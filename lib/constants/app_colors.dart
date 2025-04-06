@@ -6,4 +6,5 @@ class AppColors {
   static const Color white = Color(0xFFFFFFFF);
   static const Color orange = Colors.orange;
   static const Color adminBg = Color(0xFFFFF9C4);
+  static const Color slateBlue = Color(0xFF495F7E);
 }
