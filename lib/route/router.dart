@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:travel/data/models/function.dart';
 import 'package:travel/ui/pages/auth/signup_screen.dart';
 import 'package:travel/ui/pages/auth/login_screen.dart';
 import 'package:travel/ui/pages/menu/admin/admin_home_screen.dart';
@@ -6,9 +7,16 @@ import 'package:travel/ui/pages/menu/admin/common/item_add_screen.dart';
 import 'package:travel/ui/pages/menu/common/details_screen.dart';
 import 'package:travel/ui/pages/menu/common/list_screen.dart';
 import 'package:travel/ui/pages/menu/common/payment_success_screen.dart';
-import 'package:travel/ui/pages/menu/traveller/discover/hotel_booking_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/discover/booking_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/discover/flight/flight_confirm_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/discover/flight/flight_list_screen.dart';
 import 'package:travel/ui/pages/menu/traveller/discover/flight/flight_search_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/itinerary/add_itinerary_details_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/itinerary/add_itinerary_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/itinerary/itinerary_details_screen.dart';
 import 'package:travel/ui/pages/menu/traveller/profile/profile_edit_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/ticket/boarding_pass_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/ticket/ticket_details_screen.dart';
 import 'package:travel/ui/pages/menu/traveller/traveller_home_screen.dart';
 import 'package:travel/ui/pages/splash_screen.dart';
 import 'package:travel/ui/pages/auth/forgot_password_screen.dart';
@@ -34,9 +42,11 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/paymentSuccess',
-      builder: (context, state) => const PaymentSuccessScreen(),
+      builder: (context, state) {
+        final item = state.extra as dynamic;
+        return PaymentSuccessScreen(bookingItem: item);
+      },
     ),
-
     GoRoute(
       path: '/list/:type',
       builder: (context, state) {
@@ -52,12 +62,58 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
-      path: '/hotelBooking',
+      path: '/booking',
       builder: (context, state) {
         final item = state.extra;
-        return HotelBookingScreen(item: item);},
+        return BookingScreen(item: item);
+      },
     ),
-
+    GoRoute(
+      path: '/addItinerary',
+      builder: (context, state) => const AddItineraryScreen(),
+    ),
+    GoRoute(
+      path: '/addItineraryDetail',
+      builder: (context, state) {
+        final item = state.extra;
+        return AddItineraryDetailsScreen(tripModel: item);
+      },
+    ),
+    GoRoute(
+      path: '/itineraryDetail',
+      builder: (context, state) {
+        final item = state.extra;
+        return ItineraryDetailsScreen(trip: getItem(item));
+      },
+    ),
+    GoRoute(
+      path: '/ticketDetail',
+      builder: (context, state) {
+        final bookingItem = state.extra as dynamic;
+        return TicketDetailsScreen(bookingItem: bookingItem);
+      },
+    ),
+    GoRoute(
+      path: '/flightsList',
+      builder: (context, state) {
+        final searchReq = state.extra as dynamic;
+        return FlightListScreen(flightSearchModel: searchReq);
+      },
+    ),
+    GoRoute(
+      path: '/flightBooking',
+      builder: (context, state) {
+        final bookingModel = state.extra as dynamic;
+        return FlightConfirmScreen(bookingModel: getItem(bookingModel));
+      },
+    ),
+    GoRoute(
+      path: '/boardingPass',
+      builder: (context, state) {
+        final bookingModel = state.extra as dynamic;
+        return BoardingPassScreen(bookingModel: getItem(bookingModel));
+      } ,
+    ),
     // for admin
     GoRoute(
       path: '/adminHome',

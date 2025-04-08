@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:travel/data/models/trip_model.dart';
+import 'package:travel/data/repositories/index.dart';
 import 'package:travel/services/firebase_service.dart';
 import 'package:travel/route/router.dart';
 
@@ -7,7 +9,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseService.initialize();
   //upload();
+  //postTrip();
   runApp(const MyApp());
+}
+
+void postTrip() async {
+  TripDetails dtl = TripDetails(time: TimeOfDay.now(), task: "working");
+  List<TripDetails> list = [dtl];
+  TripSchedule schedule = TripSchedule(date: DateTime.now(), detailsList: list);
+  List<TripSchedule> lsitSchedule = [schedule];
+  TripModel data = TripModel(
+    name: "trip", 
+    startDate: DateTime.now(), 
+    endDate: DateTime.now(), 
+    dayList: lsitSchedule
+  );
+
+  if (await TripRepository.post(data: data)){
+    print('post successfully');
+  }
 }
 
 final List<Map<String, dynamic>> restaurants = [

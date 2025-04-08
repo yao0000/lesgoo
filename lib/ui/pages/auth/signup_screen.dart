@@ -34,7 +34,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
 
     if (success) {
-      UserModel user = UserModel(uid: AuthService.getCurrentUser()!.uid, username: _nameController.text.trim(), name: '', email: _emailController.text.trim(), country: 'Malaysia', gender: 'Prefer not to say', phone: '', role: 'user');
+      UserModel user = UserModel(uid: AuthService.getCurrentUser()!.uid, username: _nameController.text.trim(), name: '', email: _emailController.text.trim(), country: 'Malaysia', gender: 'Prefer not to say', phone: '', role: 'user', notifications: List.generate(4, (index) => false));
       await UserRepository.save(user.uid, user.toJson());
     }
 

@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
-import 'package:travel/data/models/restaurant_model.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 import 'package:travel/data/global.dart';
 import 'package:travel/ui/widgets/base/button.dart';
@@ -16,9 +15,10 @@ class DetailsScreen extends StatelessWidget {
 
   String _detailsRouting() {
     if (item is HotelModel) {
-      return "/hotelBooking";
+      //return "/hotelBooking";
+      return "/booking";
     }
-    return "/hotelBooking";
+    return "/booking";
   }
 
   @override

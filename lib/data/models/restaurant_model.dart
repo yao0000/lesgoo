@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class RestaurantModel {
   final String uid;
   final String name;
@@ -47,5 +49,48 @@ class RestaurantModel {
       'rating': rating,
       'imageUrl': imageUrl,
     };
+  }
+}
+
+class RestaurantBookingModel {
+  String itemUid;
+  String userUid;
+  DateTime time;
+  int pax;
+  String amount;
+  DateTime createdTime;
+
+  RestaurantBookingModel({
+    required this.itemUid,
+    required this.userUid,
+    required this.time,
+    required this.pax,
+    required this.amount,
+    DateTime? createdTime,
+  }) : createdTime = createdTime ?? DateTime.now();
+
+  factory RestaurantBookingModel.fromJson(Map<String, dynamic> json) {
+    return RestaurantBookingModel(
+      itemUid: json['itemUid'] ?? '',
+      userUid: json['userUid'] ?? '',
+      time: (json['time'] as Timestamp).toDate(),
+      pax: (json['pax'] ?? 1) as int,
+      amount: json['amount'] ?? 'Unknown',
+      createdTime:
+          json['createdTime'] != null
+              ? (json['createdTime'] as Timestamp).toDate()
+              : DateTime.now(),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'itemUid': itemUid, 
+      'userUid': userUid,
+      'time': time,
+      'pax': pax,
+      'amount': amount,
+      'createdTime': createdTime
+      };
   }
 }

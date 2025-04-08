@@ -8,10 +8,16 @@ final currencyFormat = NumberFormat.currency(
   decimalDigits: 2,
 );
 
-dynamic getAttribute(dynamic item, String key) {
-  if (item is Map) {
+dynamic getItem(dynamic obj) {
+  dynamic item = obj;
+  while (item is Map) {
     item = item.entries.first.value;
   }
+  return item;
+}
+
+dynamic getAttribute(dynamic obj, String key) {
+  dynamic item = getItem(obj);
 
   if (item is HotelModel) {
     switch (key) {
@@ -77,10 +83,12 @@ dynamic getAttribute(dynamic item, String key) {
   return "";
 }
 
-String getPriceFormat(dynamic item, int count) {
-  if (item is Map) {
-    item = item.entries.first.value;
-  }
+String getPriceFormat(dynamic obj, int count) {
+  dynamic item = getItem(obj);
 
   return currencyFormat.format(item.price * count).replaceFirst("\$", "\$ ");
+}
+
+String toPriceFormat(double amount) {
+  return currencyFormat.format(amount).replaceFirst("\$", "\$ ");
 }

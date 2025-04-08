@@ -21,12 +21,11 @@ class FirestoreService {
   }
 
   static Future<bool> insert({
-    required String collection, required Map<String, dynamic> data
+    required String collection,
+    required Map<String, dynamic> data,
   }) async {
     try {
-      await _firestore
-          .collection(collection)
-          .add(data);
+      await _firestore.collection(collection).add(data);
       return true;
     } catch (e) {
       rethrow;
@@ -47,6 +46,32 @@ class FirestoreService {
         throw Exception("No data found");
       }
     } catch (error) {
+      rethrow;
+    }
+  }
+
+  static Future<List<Map<String, dynamic>>> getListByUser(
+    String collection,
+    String userUid,
+  ) async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> doc =
+          await _firestore
+              .collection(collection)
+              .where("userUid", isEqualTo: userUid)
+              .get();
+
+      if (doc.docs.isEmpty) {
+        throw Exception("No data found");
+      }
+
+      return doc.docs.map((doc) {
+        Map<String, dynamic> docData = doc.data();
+        docData['uid'] = doc.id;
+        return docData;
+      }).toList();
+      
+    } catch (e) {
       rethrow;
     }
   }
@@ -74,6 +99,21 @@ class FirestoreService {
   ) async {
     try {
       await _firestore.collection(collection).doc(docId).update(data);
+      return true;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  static Future<bool> delete(
+    String collection,
+    String docId,
+    String subDocId,
+  ) async {
+    try {
+      String doc = docId + (subDocId.isEmpty ? "" : "/$subDocId");
+      //await _firestore.collection(collection).doc(doc).delete();
+      _firestore.collection(collection).doc(doc).collection('').doc().delete();
       return true;
     } catch (e) {
       rethrow;

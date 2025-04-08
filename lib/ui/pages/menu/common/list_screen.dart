@@ -4,10 +4,12 @@ import 'package:travel/data/global.dart';
 import 'package:travel/data/repositories/car_repository.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/data/repositories/restaurant_repository.dart';
+import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/pages/menu/common/filter_drawer.dart';
 import 'package:travel/ui/widgets/button_action.dart';
 import 'package:travel/ui/widgets/card_object.dart';
 import 'package:travel/ui/widgets/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListScreen extends StatefulWidget {
   final String type;
@@ -19,8 +21,13 @@ class ListScreen extends StatefulWidget {
 }
 
 class _ListScreen extends State<ListScreen> {
-
   final TextEditingController _searchController = TextEditingController();
+  List<dynamic>? list = [];
+  List<dynamic>? fetchList = [];
+  List<String> sortOption = [];
+  List<String> searchHistory = [];
+
+  bool showDropdown = false;
 
   Map<String, bool> filterState = {
     'desc': false,
@@ -38,14 +45,11 @@ class _ListScreen extends State<ListScreen> {
     });
   }
 
-  List<dynamic>? list = [];
-  List<dynamic>? fetchList = [];
-  List<String> sortOption = [];
-
   @override
   void initState() {
     super.initState();
     loadList();
+    loadSearchHistory();
   }
 
   void updateFilterOption(List<String> options) {
@@ -122,105 +126,210 @@ class _ListScreen extends State<ListScreen> {
 
     if (_searchController.text.trim().isNotEmpty) {
       String query = _searchController.text.trim();
-      list = list!
-          .where((item) =>
-              item.name.toLowerCase().contains(query.toLowerCase()) ||
-              item.address.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      list =
+          list!
+              .where(
+                (item) =>
+                    item.name.toLowerCase().contains(query.toLowerCase()) ||
+                    item.address.toLowerCase().contains(query.toLowerCase()),
+              )
+              .toList();
     }
+  }
+
+  Future<void> loadSearchHistory() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      searchHistory = prefs.getStringList(widget.type) ?? [];
+    });
+  }
+
+  Future<void> saveSearchHistory(String query) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (!searchHistory.contains(query)) {
+      searchHistory.insert(0, query);
+      if (searchHistory.length > 10) {
+        searchHistory = searchHistory.sublist(0, 10);
+      }
+      await prefs.setStringList(widget.type, searchHistory);
+    }
+  }
+
+  void saveSearchHistoryToStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList('searchHistory', searchHistory);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.type.toUpperCase(),
-          style: TextStyle(fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          showDropdown = false; // Hide dropdown when tapping outside
+        });
+        FocusScope.of(context).unfocus(); // Close keyboard if open
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            widget.type.toUpperCase(),
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              context.pop();
+            },
+          ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            context.pop();
-          },
-        ),
-      ),
-      backgroundColor: Colors.blue[100],
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
+        backgroundColor: Colors.blue[100],
+        body: Stack(
+          children: [
+            Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Row(
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      const Icon(
-                        Icons.search,
-                        color: Colors.grey,
-                      ), // Search Icon
-                      Expanded(
-                        child: TextField(
-                          controller: _searchController,
-                          onChanged: (value) { sortList(); },
-                          decoration: const InputDecoration(
-                            hintText: 'Search by name & location...',
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(vertical: 15),
-                          ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
                         ),
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.filter_list, color: Colors.grey),
-                        onPressed: () => openFilterDrawer(context),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.search, color: Colors.grey),
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                onChanged: (value) {
+                                  sortList();
+                                },
+                                onTap: () {
+                                  if (searchHistory.isEmpty) {
+                                    return;
+                                  }
+                                  setState(() {
+                                    showDropdown = true;
+                                  });
+                                },
+                                onSubmitted: (value) {
+                                  saveSearchHistory(value);
+                                  setState(() {
+                                    showDropdown = false;
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Search by name & location...',
+                                  border: InputBorder.none,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 15,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(
+                                Icons.filter_list,
+                                color: Colors.grey,
+                              ),
+                              onPressed: () => openFilterDrawer(context),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
+                Expanded(
+                  child:
+                      list == null
+                          ? const Center(child: CircularProgressIndicator())
+                          : list!.isEmpty
+                          ? const Center(child: Text("No data available"))
+                          : ListView.builder(
+                            padding: const EdgeInsets.all(16),
+                            itemCount: list!.length,
+                            itemBuilder: (context, index) {
+                              return CardObject(item: list![index]);
+                            },
+                          ),
+                ),
+                if (Global.user.role == 'admin')
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ButtonAction(
+                      label:
+                          "Add New ${widget.type.split(' ').map((word) => word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '').join(' ')}",
+                      onPressed:
+                          () => GoRouter.of(
+                            context,
+                          ).push('/itemAdd/${widget.type}'),
+                    ),
+                  ),
               ],
             ),
-          ),
-          Expanded(
-            child:
-                list == null
-                    ? const Center(child: CircularProgressIndicator())
-                    : list!.isEmpty
-                    ? const Center(child: Text("No data available"))
-                    : ListView.builder(
-                      padding: const EdgeInsets.all(16),
-                      itemCount: list!.length,
+            if (showDropdown && searchHistory.isNotEmpty)
+              Positioned(
+                left: 16,
+                right: 16,
+                top: 70,
+                child: Material(
+                  elevation: 4,
+                  borderRadius: BorderRadius.circular(10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: BoxConstraints(maxHeight: 200),
+                    child: ListView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      itemCount: searchHistory.length,
                       itemBuilder: (context, index) {
-                        return CardObject(item: list![index]);
+                        return ListTile(
+                          title: Text(searchHistory[index]),
+                          leading: Icon(Icons.history, color: Colors.grey),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close, color: Colors.grey),
+                            onPressed: () {
+                              setState(() {
+                                searchHistory.removeAt(
+                                  index,
+                                ); // Remove item from the list
+                              });
+                              saveSearchHistoryToStorage(); // Update storage
+                            },
+                          ),
+                          onTap: () {
+                            _searchController.text = searchHistory[index];
+                            sortList();
+                            setState(() {
+                              showDropdown = false;
+                            });
+                          },
+                        );
                       },
                     ),
-          ),
-          if (Global.user.role == 'admin')
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ButtonAction(
-                label:
-                    "Add New ${widget.type.split(' ').map((word) => word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '').join(' ')}",
-                onPressed:
-                    () => GoRouter.of(context).push('/itemAdd/${widget.type}'),
+                  ),
+                ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

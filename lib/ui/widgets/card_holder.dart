@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/data/models/index.dart';
-import 'package:travel/data/models/restaurant_model.dart';
 import 'package:travel/data/models/function.dart';
 
 class CardHolder extends StatelessWidget {

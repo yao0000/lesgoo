@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/hotel_model.dart';
 import 'package:travel/services/firebase_storage_service.dart';
 import 'package:travel/services/firestore_service.dart';
@@ -7,6 +9,17 @@ import 'package:travel/ui/widgets/toast.dart';
 
 class HotelRepository {
   static final String _collection = "hotels";
+
+  static Future<HotelModel?> getItem(String uid) async {
+    try {
+      DocumentSnapshot doc = await FirestoreService.getItem(_collection, uid);
+      HotelModel data = HotelModel.fromJson(doc.data() as Map<String, dynamic>);
+      return data;
+    } catch (e) {
+      showToast(e.toString());
+    }
+    return null;
+  }
 
   static Future<List<HotelModel>?> getList() async {
     try {
@@ -28,27 +41,25 @@ class HotelRepository {
 class HotelBookingRepository {
   static final String _bookingCollection = "hotelsBooking";
 
-  static Future<bool> post({
-    required String hotelUid,
-    required String userUid,
-    required DateTime startDate,
-    required DateTime endDate,
-    required int roomCount,
-    required String totalPrice,
-  }) async {
+  static Future<List<HotelBookingModel>> getListByUser(String userUid) async {
     try {
-      Map<String, dynamic> bookingData = {
-        'userUid': userUid,
-        'hotelUid': hotelUid,
-        'startDate': startDate,
-        'endDate': endDate,
-        'roomCount': roomCount,
-        'price': totalPrice,
-        'createdAt': DateTime.now(),
-      };
+      List<Map<String, dynamic>> data = await FirestoreService.getListByUser(
+        _bookingCollection,
+        userUid,
+      );
+
+      return data.map((map) => HotelBookingModel.fromJson(map)).toList();
+    } catch (e) {
+      showToast(e.toString());
+    }
+    return [];
+  }
+
+  static Future<bool> post({required HotelBookingModel data}) async {
+    try {
       return await FirestoreService.insert(
         collection: _bookingCollection,
-        data: bookingData,
+        data: data.toJson(),
       );
     } catch (e) {
       showToast("Booking failed: ${e.toString()}");

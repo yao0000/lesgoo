@@ -54,47 +54,52 @@ class HotelModel {
 }
 
 class HotelBookingModel {
-  String hotelUid;
+  String itemUid;
   String userUid;
   DateTime startDate;
   DateTime endDate;
   int roomCount;
-  double price;
+  int totalDays;
+  String amount;
   DateTime createdTime;
 
   HotelBookingModel({
-    required this.hotelUid,
+    required this.itemUid,
     required this.userUid,
     required this.startDate,
     required this.endDate,
     required this.roomCount,
-    required this.price,
+    required this.totalDays,
+    required this.amount,
     DateTime? createdTime,
   }) : createdTime = createdTime ?? DateTime.now();
 
   factory HotelBookingModel.fromJson(Map<String, dynamic> json) {
     return HotelBookingModel(
-      hotelUid: json['hotelUid'] as String,
+      itemUid: json['itemUid'] as String,
       userUid: json['userUid'] as String,
       startDate: (json['startDate'] as Timestamp).toDate(),
       endDate: (json['endDate'] as Timestamp).toDate(),
       roomCount: json['roomCount'] as int,
-      price: (json['price'] as num).toDouble(),
-      createdTime: json['createdTime'] != null
-          ? (json['createdTime'] as Timestamp).toDate()
-          : DateTime.now(),
+      totalDays: json['totalDays'] as int,
+      amount: json['price'] ?? '',
+      createdTime:
+          json['createdTime'] != null
+              ? (json['createdTime'] as Timestamp).toDate()
+              : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'hotelUid': hotelUid,
+      'itemUid': itemUid,
       'userUid': userUid,
-      'startDate': Timestamp.fromDate(startDate), 
-      'endDate': Timestamp.fromDate(endDate),
+      'startDate': startDate,
+      'endDate': endDate,
       'roomCount': roomCount,
-      'price': price,
-      'createdTime': Timestamp.fromDate(createdTime),
+      'totalDays': totalDays,
+      'amount': amount,
+      'createdTime': createdTime,
     };
   }
 }

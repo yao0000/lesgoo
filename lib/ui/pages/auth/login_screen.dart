@@ -45,67 +45,69 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: AppColors.bgColor,
       body: Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 32.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/img/logo.png', height: 100),
-                SizedBox(height: 16),
-                Text(
-                  "Welcome Back,",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text("Let's start our journey!"),
-                InputText(
-                  label: "Email",
-                  hintText: "Enter your email",
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  isRequired: true,
-                ),
-                InputPassword(
-                  label: "Password",
-                  hintText: "Enter your password",
-                  controller: _passwordController,
-                ),
-                SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/img/logo.png', height: 100),
+                  SizedBox(height: 16),
+                  Text(
+                    "Welcome Back,",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  Text("Let's start our journey!"),
+                  InputText(
+                    label: "Email",
+                    hintText: "Enter your email",
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    isRequired: true,
+                  ),
+                  InputPassword(
+                    label: "Password",
+                    hintText: "Enter your password",
+                    controller: _passwordController,
+                  ),
+                  SizedBox(height: 8),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        GoRouter.of(context).push('/resetPassword');
+                      },
+                      child: Text(
+                        "Forgot Password?",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 20),
+                  ButtonAuth(label: "LogIn", onPressed: _login),
+                  SizedBox(height: 20),
+                  Text("You don’t have an account?"),
+                  TextButton(
                     onPressed: () {
-                      GoRouter.of(context).push('/adminHome');
+                      GoRouter.of(context).push('/signup');
                     },
                     child: Text(
-                      "Forgot Password?",
+                      "REGISTER",
                       style: TextStyle(
-                        color: Colors.red,
+                        color: Colors.orange,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                ),
-
-                SizedBox(height: 20),
-                ButtonAuth(label: "LogIn", onPressed: _login),
-                SizedBox(height: 20),
-                Text("You don’t have an account?"),
-                TextButton(
-                  onPressed: () {
-                    GoRouter.of(context).push('/signup');
-                  },
-                  child: Text(
-                    "REGISTER",
-                    style: TextStyle(
-                      color: Colors.orange,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

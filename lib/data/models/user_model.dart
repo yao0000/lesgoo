@@ -12,6 +12,8 @@ class UserModel {
   String password;
   String imageUrl;
 
+  List<bool> notifications;
+
   UserModel({
     required this.uid,
     required this.username,
@@ -21,6 +23,7 @@ class UserModel {
     required this.gender,
     required this.phone,
     required this.role,
+    required this.notifications,
     this.imageUrl = "",
     this.password = "",
   });
@@ -35,6 +38,7 @@ class UserModel {
       gender: json['gender'] ?? '',
       phone: json['phone'] ?? '',
       role: json['role'] ?? '',
+      notifications: (json["notifications"] as List<dynamic>).map((e) => e as bool).toList(),
       imageUrl: json['imageUrl'] ?? '',
     );
   }
@@ -50,6 +54,7 @@ class UserModel {
       'phone': phone,
       'role': role,
       'imageUrl': imageUrl,
+      'notifications': notifications
     };
   }
 }
