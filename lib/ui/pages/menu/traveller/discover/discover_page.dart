@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/repositories/restaurant_repository.dart';
+import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/ui/widgets/card_holder.dart';
 import 'package:travel/ui/widgets/icon_category.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
@@ -120,77 +121,4 @@ class DiscoverPage extends StatelessWidget {
       ),
     );
   }
-
-  // Card Widget
-  /*Widget _buildCard<T>(double screenWidth, T item) {
-    return Container(
-      width: screenWidth * 0.6,
-      margin: const EdgeInsets.only(right: 15),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              color: Colors.grey[300], // Placeholder for image
-              alignment: Alignment.center,
-              child: Image.network(
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Google_Images_2015_logo.svg/800px-Google_Images_2015_logo.svg.png',
-                height: 120,
-                width: double.infinity,
-                fit: BoxFit.cover,
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
-                },
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(
-                    Icons.broken_image,
-                    size: 50,
-                    color: Colors.grey,
-                  );
-                },
-              ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    getObject(item, 'place'),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    getObject(item, 'rating'),
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    getObject(item, 'price'),
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    "Per person",
-                    style: TextStyle(fontSize: 12, color: Colors.grey),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }*/
 }

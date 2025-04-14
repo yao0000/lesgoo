@@ -23,7 +23,6 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
     ServicesPage(),
     Center(child: Text("Itinerary Page", style: TextStyle(fontSize: 20))),
     Center(child: Text("Tickets Page", style: TextStyle(fontSize: 20))),
-    ProfilePage(),
   ];
 
   @override

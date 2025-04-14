@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,13 +10,18 @@ import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/services/firebase_storage_service.dart';
 import 'package:travel/services/firestore_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class UserRepository {
   static final String collection = "users";
 
   static Future<void> save(String id, Map<String, dynamic> data) async {
     try {
-      await FirestoreService.post(collection, AuthService.getCurrentUser()!.uid, data);
+      await FirestoreService.post(
+        collection,
+        AuthService.getCurrentUser()!.uid,
+        data,
+      );
     } catch (e) {
       showToast(e.toString());
     }
@@ -42,8 +49,13 @@ class UserRepository {
   }
 
   static Future<String> uploadPhoto(File file) async {
-    String fileName = AuthService.getCurrentUser()!.uid + path.extension(file.path);
-    String? url = await FirebaseStorageService.uploadFile(collection, file,fileName:  fileName);
+    String fileName =
+        AuthService.getCurrentUser()!.uid + path.extension(file.path);
+    String? url = await FirebaseStorageService.uploadFile(
+      collection,
+      file,
+      fileName: fileName,
+    );
     return url ?? '';
   }
 
@@ -53,5 +65,22 @@ class UserRepository {
       AuthService.getCurrentUser()!.uid,
       Global.user.toJson(),
     );
+  }
+
+  static Future<bool> delete({required String userUid}) async {
+    try {
+      final HttpsCallable services = FirebaseFunctions.instance.httpsCallable(
+        "deleteUserById",
+      );
+      await services.call(<String, dynamic>{'uid': userUid});
+
+      return true;
+    } catch (e) {
+      showToast(e.toString());
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      return false;
+    }
   }
 }
