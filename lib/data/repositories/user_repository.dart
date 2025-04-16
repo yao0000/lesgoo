@@ -10,7 +10,6 @@ import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/services/firebase_storage_service.dart';
 import 'package:travel/services/firestore_service.dart';
 import 'package:travel/ui/widgets/widgets.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 class UserRepository {
   static final String collection = "users";
@@ -73,7 +72,7 @@ class UserRepository {
         "deleteUserById",
       );
       await services.call(<String, dynamic>{'uid': userUid});
-
+      await FirestoreService.deleteById(collection, userUid);
       return true;
     } catch (e) {
       showToast(e.toString());
@@ -81,6 +80,18 @@ class UserRepository {
         print(e.toString());
       }
       return false;
+    }
+  }
+
+  static Future<List<UserModel>> getList() async {
+    try {
+      List<Map<String, dynamic>> data = await FirestoreService.getList(
+        collection,
+      );
+      return data.map((map) => UserModel.fromJson(map)).toList();
+    } catch (e) {
+      showToast(e.toString());
+      return [];
     }
   }
 }

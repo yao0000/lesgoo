@@ -15,8 +15,10 @@ import 'package:travel/ui/pages/menu/traveller/itinerary/add_itinerary_details_s
 import 'package:travel/ui/pages/menu/traveller/itinerary/add_itinerary_screen.dart';
 import 'package:travel/ui/pages/menu/traveller/itinerary/itinerary_details_screen.dart';
 import 'package:travel/ui/pages/menu/traveller/profile/profile_edit_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/profile/profile_page.dart';
 import 'package:travel/ui/pages/menu/traveller/ticket/boarding_pass_screen.dart';
 import 'package:travel/ui/pages/menu/traveller/ticket/ticket_details_screen.dart';
+import 'package:travel/ui/pages/menu/traveller/ticket/ticket_page.dart';
 import 'package:travel/ui/pages/menu/traveller/traveller_home_screen.dart';
 import 'package:travel/ui/pages/splash_screen.dart';
 import 'package:travel/ui/pages/auth/forgot_password_screen.dart';
@@ -58,7 +60,7 @@ final GoRouter router = GoRouter(
       path: '/details',
       builder: (context, state) {
         final item = state.extra as dynamic;
-        return DetailsScreen(item: item);
+        return DetailsScreen(item: getItem(item));
       },
     ),
     GoRoute(
@@ -125,6 +127,21 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final type = state.pathParameters['type']!;
         return ItemAddScreen(type: type);
+      },
+    ),
+    GoRoute(
+      path: '/userDetail',
+      builder:(context, state) {
+        final userUid = state.extra;
+        return ProfilePage(userUid: getItem(userUid));
+      },
+    ),
+    GoRoute(
+      path: '/ticketList',
+      builder:(context, state) {
+        final userUid = state.extra;
+        //return UserDetailScreen(user: getItem(user));
+        return TicketPage(userUid: getItem(userUid));
       },
     ),
   ],

@@ -69,4 +69,13 @@ class RestaurantBookingRepository {
       return false;
     }
   }
+
+    static Future<bool> delete({required String uid}) async {
+    try {
+      return await FirestoreService.deleteById(_bookingCollection, uid);
+    } catch (e) {
+      showToast("Delete failed: ${e.toString()}");
+      return false;
+    }
+  }
 }

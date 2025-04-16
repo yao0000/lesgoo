@@ -54,6 +54,7 @@ class HotelModel {
 }
 
 class HotelBookingModel {
+  String bookingUid;
   String itemUid;
   String userUid;
   DateTime startDate;
@@ -72,10 +73,13 @@ class HotelBookingModel {
     required this.totalDays,
     required this.amount,
     DateTime? createdTime,
-  }) : createdTime = createdTime ?? DateTime.now();
+    String? bookingUid,
+  }) : createdTime = createdTime ?? DateTime.now(),
+       bookingUid = bookingUid ?? "";
 
   factory HotelBookingModel.fromJson(Map<String, dynamic> json) {
     return HotelBookingModel(
+      bookingUid: json["uid"] as String,
       itemUid: json['itemUid'] as String,
       userUid: json['userUid'] as String,
       startDate: (json['startDate'] as Timestamp).toDate(),

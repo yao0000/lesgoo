@@ -4,7 +4,6 @@ import 'package:travel/data/global.dart';
 import 'package:travel/data/repositories/car_repository.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/data/repositories/restaurant_repository.dart';
-import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/pages/menu/common/filter_drawer.dart';
 import 'package:travel/ui/widgets/button_action.dart';
 import 'package:travel/ui/widgets/card_object.dart';

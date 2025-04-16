@@ -105,15 +105,9 @@ class FirestoreService {
     }
   }
 
-  static Future<bool> delete(
-    String collection,
-    String docId,
-    String subDocId,
-  ) async {
+  static Future<bool> deleteById(String collection, String docId) async {
     try {
-      String doc = docId + (subDocId.isEmpty ? "" : "/$subDocId");
-      //await _firestore.collection(collection).doc(doc).delete();
-      _firestore.collection(collection).doc(doc).collection('').doc().delete();
+      await _firestore.collection(collection).doc(docId).delete();
       return true;
     } catch (e) {
       rethrow;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/ui/pages/menu/admin/services/service_page.dart';
-import 'package:travel/ui/pages/menu/traveller/profile/profile_page.dart';
+import 'package:travel/ui/pages/menu/admin/users/users_page.dart';
 
 class AdminHomeScreen extends StatefulWidget {
   const AdminHomeScreen({super.key});
@@ -22,7 +22,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final List<Widget> _pages = [
     ServicesPage(),
     Center(child: Text("Itinerary Page", style: TextStyle(fontSize: 20))),
-    Center(child: Text("Tickets Page", style: TextStyle(fontSize: 20))),
+    UsersPage()
   ];
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/global.dart';
+import 'package:travel/services/firebase_auth_service.dart';
 import 'package:travel/ui/pages/menu/traveller/discover/discover_page.dart';
 import 'package:travel/ui/pages/menu/traveller/itinerary/itinerary_page.dart';
 import 'package:travel/ui/pages/menu/traveller/profile/profile_page.dart';
@@ -27,9 +28,9 @@ class _HomeScreenState extends State<HomeScreen> {
     DiscoverPage(),
     //Center(child: Text("Itinerary Page", style: TextStyle(fontSize: 20))),
     ItineraryPage(),
-    TicketPage(),
+    TicketPage(userUid: AuthService.getCurrentUser()!.uid),
     //Center(child: Text("Tickets Page", style: TextStyle(fontSize: 20))),
-    ProfilePage(),
+    ProfilePage(userUid: AuthService.getCurrentUser()!.uid),
   ];
 
   @override

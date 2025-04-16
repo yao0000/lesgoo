@@ -8,59 +8,82 @@ import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/flight_repository.dart';
 import 'package:travel/data/repositories/index.dart';
 import 'package:travel/data/repositories/user_repository.dart';
-import 'package:travel/services/firebase_auth_service.dart';
 
 class TicketPage extends StatefulWidget {
-  const TicketPage({super.key});
+  final String userUid;
+  const TicketPage({super.key, required this.userUid});
 
   @override
   State<StatefulWidget> createState() => _TicketPageState();
 }
 
 class _TicketPageState extends State<TicketPage> {
+  late String userUid;
   int selectedIndex = 0;
-  final List<String> categories = ["Flights", "Hotel", "Restaurant", "Cars"];
+  final List<String> categories =
+      Global.user.role == "admin"
+          ? ["Hotel", "Restaurant", "Cars"]
+          : ["Flights", "Hotel", "Restaurant", "Cars"];
   List<dynamic> list = [];
 
   @override
   void initState() {
     super.initState();
+    userUid = widget.userUid;
     _loadList();
   }
 
   Future<void> _loadList() async {
     List<dynamic>? fetchList = [];
-    switch (selectedIndex) {
-      case 0:
-        {
-          fetchList = await FlightBookingRepository.getListByUser(
-            AuthService.getCurrentUser()!.uid,
-          );
-          break;
-        }
-      case 1:
-        {
-          fetchList = await HotelBookingRepository.getListByUser(
-            AuthService.getCurrentUser()!.uid,
-          );
-          break;
-        }
-      case 2:
-        {
-          fetchList = await RestaurantBookingRepository.getListByUser(
-            AuthService.getCurrentUser()!.uid,
-          );
-          break;
-        }
-      case 3:
-        {
-          fetchList = await CarBookingRepository.getListByUser(
-            AuthService.getCurrentUser()!.uid,
-          );
-          break;
-        }
-      default:
-        {}
+    if (Global.user.role == "user") {
+      switch (selectedIndex) {
+        case 0:
+          {
+            fetchList = await FlightBookingRepository.getListByUser(userUid);
+            break;
+          }
+        case 1:
+          {
+            fetchList = await HotelBookingRepository.getListByUser(userUid);
+            break;
+          }
+        case 2:
+          {
+            fetchList = await RestaurantBookingRepository.getListByUser(
+              userUid,
+            );
+            break;
+          }
+        case 3:
+          {
+            fetchList = await CarBookingRepository.getListByUser(userUid);
+            break;
+          }
+        default:
+          {}
+      }
+    } else {
+      switch (selectedIndex) {
+        case 0:
+          {
+            fetchList = await HotelBookingRepository.getListByUser(userUid);
+            break;
+          }
+        case 1:
+          {
+            fetchList = await RestaurantBookingRepository.getListByUser(
+              userUid,
+            );
+            break;
+          }
+        case 2:
+          {
+            fetchList = await CarBookingRepository.getListByUser(userUid);
+            break;
+          }
+        default:
+          {}
+      }
     }
 
     setState(() {
@@ -121,7 +144,8 @@ class _TicketPageState extends State<TicketPage> {
                               ),
                             ),
                           ),
-                          if (Global.user.notifications[index])
+                          if (Global.user.notifications[index] &&
+                              userUid == Global.user.uid)
                             Positioned(
                               right: -4,
                               top: -4,
@@ -185,16 +209,20 @@ class _TicketPageState extends State<TicketPage> {
       margin: EdgeInsets.all(10),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       child: ListTile(
-        onTap: () {
+        onTap: () async {
           if (bookingItem is FlightBookingModel) {
             GoRouter.of(
               context,
             ).push('/boardingPass', extra: {'bookingItem': bookingItem});
             return;
           }
-          GoRouter.of(
+          bool? isDelete = await GoRouter.of(
             context,
           ).push('/ticketDetail', extra: {'bookingItem': bookingItem});
+
+          if (isDelete == true) {
+            _loadList();
+          }
         },
         leading: Container(
           width: 50,

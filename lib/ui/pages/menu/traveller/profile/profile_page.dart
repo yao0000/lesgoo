@@ -5,11 +5,13 @@ import 'package:travel/data/global.dart';
 import 'package:travel/data/models/user_model.dart';
 import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
+import 'package:travel/ui/widgets/base/custom_app_bar.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 import 'package:restart_app/restart_app.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final String userUid;
+  const ProfilePage({super.key, required this.userUid});
 
   void _signOut(BuildContext context) async {
     bool? confirm = await showConfirmationDialog(
@@ -27,13 +29,28 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
+  void _deleteUser(BuildContext context) async {
+    bool? confirm = await showConfirmationDialog(
+      context,
+      "Logout",
+      "The user will be permanent deleted",
+    );
+
+    if (confirm == null || !confirm) {
+      return;
+    }
+
+    bool isSuccess = await UserRepository.delete(userUid: userUid);
+    if (isSuccess) {
+      context.pop(true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    String userUid = AuthService.getCurrentUser()!.uid;
-
     return Scaffold(
-      backgroundColor: AppColors.bgColor,
-      appBar: TravellerAppBar(title: "Profile"),
+      backgroundColor: Global.user.role == "user" ? AppColors.bgColor : AppColors.adminBg,
+      appBar: Global.user.role == "user" ? TravellerAppBar(title: "Profile") : CustomAppBar(title: "", backgroundColor: AppColors.adminBg),
       body: StreamBuilder<UserModel?>(
         stream: UserRepository.getUserStream(userUid),
         builder: (context, snapshot) {
@@ -53,14 +70,14 @@ class ProfilePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  (Global.user.imageUrl.isEmpty)
+                  (user.imageUrl.isEmpty)
                       ? CircleAvatar(
                         radius: 50,
                         backgroundColor: AppColors.navyBlue,
                       )
                       : ClipOval(
                         child: Image.network(
-                          Global.user.imageUrl,
+                          user.imageUrl,
                           height: 120,
                           width: 120,
                           fit: BoxFit.cover,
@@ -96,10 +113,12 @@ class ProfilePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 15),
 
-                  ButtonAction(
-                    label: "Edit Profile",
-                    onPressed: () => GoRouter.of(context).push('/profileEdit'),
-                  ),
+                  if (Global.user.role == "user")
+                    ButtonAction(
+                      label: "Edit Profile",
+                      onPressed:
+                          () => GoRouter.of(context).push('/profileEdit'),
+                    ),
 
                   const SizedBox(height: 20),
 
@@ -121,10 +140,20 @@ class ProfilePage extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 30),
-                  ButtonAction(
-                    label: "Log Out",
-                    onPressed: () => _signOut(context),
-                  ),
+                  if (Global.user.role == "user")
+                    ButtonAction(
+                      label: "Log Out",
+                      onPressed: () => _signOut(context),
+                    ),
+
+                  if (Global.user.role == "admin")
+                    Column(
+                      children: [
+                        ButtonAction(label: "Manage Booking", onPressed: () => context.push('/ticketList', extra: user.uid)),
+                        if (user.role == "user")
+                          ButtonAction(label: "Delete User", btnColor: Colors.red, onPressed: () => _deleteUser(context)),
+                      ],
+                    ),
                 ],
               ),
             ),

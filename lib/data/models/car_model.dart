@@ -54,6 +54,7 @@ class CarModel {
 }
 
 class CarBookingModel {
+  String bookingUid;
   String itemUid;
   String userUid;
   DateTime startDate;
@@ -70,10 +71,13 @@ class CarBookingModel {
     required this.daysCount,
     required this.amount,
     DateTime? createdTime,
-  }) : createdTime = createdTime ?? DateTime.now();
+    String? bookingUid,
+  }) : createdTime = createdTime ?? DateTime.now(),
+       bookingUid = bookingUid ?? '';
 
   factory CarBookingModel.fromJson(Map<String, dynamic> json) {
     return CarBookingModel(
+      bookingUid: json['uid'] ?? '',
       itemUid: json['itemUid'] ?? '',
       userUid: json['userUid'] ?? '',
       startDate: (json['startDate'] as Timestamp).toDate(),
@@ -85,13 +89,13 @@ class CarBookingModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'itemUid': itemUid, 
+      'itemUid': itemUid,
       'userUid': userUid,
       'startDate': startDate,
       'endDate': endDate,
       'daysCount': daysCount,
       'amount': amount,
-      'createdTime': createdTime
+      'createdTime': createdTime,
     };
   }
 }

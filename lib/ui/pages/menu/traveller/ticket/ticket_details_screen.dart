@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/global.dart';
 import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/function.dart';
 import 'package:travel/data/models/index.dart';
@@ -31,6 +32,31 @@ class _TicketDetailsScreen extends State<TicketDetailsScreen> {
     super.initState();
     bookingItem = getItem(widget.bookingItem);
     itemStream = _loadItemDetails();
+  }
+
+  Future<void> _deleteBooking() async {
+    bool? confirm = await showConfirmationDialog(
+      context,
+      "Are you sure ?",
+      "The system will cancel the bookings and notify the customer thru email",
+    );
+
+    if (confirm == null || !confirm) {
+      return;
+    }
+
+    bool isSucess = false;
+    if (bookingItem is HotelBookingModel) {
+      isSucess = await HotelBookingRepository.delete(uid: bookingItem.bookingUid);
+    } else if (bookingItem is RestaurantBookingModel) {
+      isSucess = await RestaurantBookingRepository.delete(uid: bookingItem.bookingUid);
+    } else if (bookingItem is CarBookingModel) {
+      isSucess = await CarBookingRepository.delete(uid: bookingItem.bookingUid);
+    }
+
+    if (isSucess) {
+      context.pop(true);
+    }
   }
 
   Stream<dynamic> _loadItemDetails() {
@@ -123,16 +149,19 @@ class _TicketDetailsScreen extends State<TicketDetailsScreen> {
                       ],
                     ),
                   ),
-                  _buildRatingSection(),
+                  if (Global.user.role == "user") _buildRatingSection(),
                   const SizedBox(height: 15),
-                  Center(
-                    child: ButtonAction(
-                      label: "Close",
-                      onPressed: () {
-                        context.go('/home');
-                      },
+                  if (Global.user.role == "user")
+                    Center(
+                      child: ButtonAction(
+                        label: "Close",
+                        onPressed: () {
+                          context.go('/home');
+                        },
+                      ),
                     ),
-                  ),
+                  if (Global.user.role == "admin")
+                  Center(child: ButtonAction(label: "Delete Booking", btnColor: Colors.red, onPressed: () => _deleteBooking()),)
                 ],
               ),
             );

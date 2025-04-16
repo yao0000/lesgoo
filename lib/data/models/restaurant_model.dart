@@ -53,6 +53,7 @@ class RestaurantModel {
 }
 
 class RestaurantBookingModel {
+  String bookingUid;
   String itemUid;
   String userUid;
   DateTime time;
@@ -67,10 +68,13 @@ class RestaurantBookingModel {
     required this.pax,
     required this.amount,
     DateTime? createdTime,
-  }) : createdTime = createdTime ?? DateTime.now();
+    String? bookingUid,
+  }) : createdTime = createdTime ?? DateTime.now(),
+       bookingUid = bookingUid ?? "";
 
   factory RestaurantBookingModel.fromJson(Map<String, dynamic> json) {
     return RestaurantBookingModel(
+      bookingUid: json['uid'] ?? '',
       itemUid: json['itemUid'] ?? '',
       userUid: json['userUid'] ?? '',
       time: (json['time'] as Timestamp).toDate(),
@@ -85,12 +89,12 @@ class RestaurantBookingModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'itemUid': itemUid, 
+      'itemUid': itemUid,
       'userUid': userUid,
       'time': time,
       'pax': pax,
       'amount': amount,
-      'createdTime': createdTime
-      };
+      'createdTime': createdTime,
+    };
   }
 }

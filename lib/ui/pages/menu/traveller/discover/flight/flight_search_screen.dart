@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/ui/widgets/dialog_msg.dart';

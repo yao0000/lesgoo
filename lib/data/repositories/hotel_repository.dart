@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/hotel_model.dart';
 import 'package:travel/services/firebase_storage_service.dart';
 import 'package:travel/services/firestore_service.dart';
@@ -63,6 +62,15 @@ class HotelBookingRepository {
       );
     } catch (e) {
       showToast("Booking failed: ${e.toString()}");
+      return false;
+    }
+  }
+
+  static Future<bool> delete({required String uid}) async {
+    try {
+      return await FirestoreService.deleteById(_bookingCollection, uid);
+    } catch (e) {
+      showToast("Delete failed: ${e.toString()}");
       return false;
     }
   }
