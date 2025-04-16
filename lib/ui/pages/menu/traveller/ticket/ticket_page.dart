@@ -8,6 +8,7 @@ import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/flight_repository.dart';
 import 'package:travel/data/repositories/index.dart';
 import 'package:travel/data/repositories/user_repository.dart';
+import 'package:travel/ui/widgets/container_no_data.dart';
 
 class TicketPage extends StatefulWidget {
   final String userUid;
@@ -173,7 +174,7 @@ class _TicketPageState extends State<TicketPage> {
           Expanded(
             child:
                 list.isEmpty
-                    ? Center(child: Text("No booking for now"))
+                    ? noDataScreen("No booking for now")
                     : ListView.builder(
                       itemCount: list.length,
                       itemBuilder: (context, index) {

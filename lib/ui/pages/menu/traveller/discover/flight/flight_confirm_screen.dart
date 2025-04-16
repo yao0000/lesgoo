@@ -46,7 +46,7 @@ class FlightConfirmScreen extends StatelessWidget {
         child: Column(
           children: [
             _buildSearchHeader(),
-            Expanded(child: _buildBookingDetails(context)),
+            _buildBookingDetails(context),
             Padding(
               padding: const EdgeInsets.all(16),
               child: ButtonAction(

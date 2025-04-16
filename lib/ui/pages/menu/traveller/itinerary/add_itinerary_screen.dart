@@ -58,8 +58,8 @@ class _AddItineraryScreen extends State<AddItineraryScreen> {
     if (isInvalid) {
       showMessageDialog(
         context: context,
-        title: "Error",
-        message: "Start Date must < End Date",
+        title: "Opps",
+        message: "End date must bigger than start date",
       );
       return;
     }
@@ -98,7 +98,7 @@ class _AddItineraryScreen extends State<AddItineraryScreen> {
         _endDate == null) {
       showMessageDialog(
         context: context,
-        title: "Error",
+        title: "Opps",
         message: "All fields are requried",
       );
       return;

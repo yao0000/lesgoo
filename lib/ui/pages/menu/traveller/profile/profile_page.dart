@@ -59,7 +59,7 @@ class ProfilePage extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text("No user data found"));
+            return noDataScreen("No user data found");
           }
 
           UserModel user = snapshot.data!;

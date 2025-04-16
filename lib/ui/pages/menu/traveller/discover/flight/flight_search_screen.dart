@@ -43,7 +43,7 @@ class _FlightSearchScreenState extends State<FlightSearchScreen> {
         passengerController.text.trim().isEmpty) {
       showMessageDialog(
         context: context,
-        title: "Error",
+        title: "Opps",
         message: "All field are required",
       );
       return;
@@ -54,7 +54,7 @@ class _FlightSearchScreenState extends State<FlightSearchScreen> {
     if (pax == null) {
       showMessageDialog(
         context: context,
-        title: "Error",
+        title: "Opps",
         message: "Invalid passenger value",
       );
       return;

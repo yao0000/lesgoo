@@ -50,7 +50,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         coverImage == null ||
         galleryPhoto == null) {
       showMessageDialog(
-        title: "Error",
+        title: "Opps",
         message: "All field are required.",
         context: context,
       );

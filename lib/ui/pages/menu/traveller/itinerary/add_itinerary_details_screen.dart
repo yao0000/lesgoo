@@ -30,7 +30,7 @@ class _AddItineraryDetailsScreen extends State<AddItineraryDetailsScreen> {
     if (tripModel.isAnyNull()) {
       showMessageDialog(
         context: context,
-        title: "Error",
+        title: "Opps",
         message: "All fields are required",
       );
       return;

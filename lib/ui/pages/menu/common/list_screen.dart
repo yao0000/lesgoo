@@ -258,7 +258,7 @@ class _ListScreen extends State<ListScreen> {
                       list == null
                           ? const Center(child: CircularProgressIndicator())
                           : list!.isEmpty
-                          ? const Center(child: Text("No data available"))
+                          ? noDataScreen("No data available")
                           : ListView.builder(
                             padding: const EdgeInsets.all(16),
                             itemCount: list!.length,

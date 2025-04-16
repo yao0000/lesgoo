@@ -61,8 +61,8 @@ class _BookingScreenState extends State<BookingScreen> {
     if (isInvalid) {
       showMessageDialog(
         context: context,
-        title: "Error",
-        message: "Start Date must < End Date",
+        title: "Opps",
+        message: "End date must bigger than start date",
       );
       return;
     }
@@ -113,7 +113,7 @@ class _BookingScreenState extends State<BookingScreen> {
       if (startDate == null || endDate == null) {
         showMessageDialog(
           context: context,
-          title: "Error",
+          title: "Opps",
           message: "Date are required",
         );
         return;
@@ -132,8 +132,17 @@ class _BookingScreenState extends State<BookingScreen> {
       if (startDate == null) {
         showMessageDialog(
           context: context,
-          title: "Error",
+          title: "Opps",
           message: "Date is required",
+        );
+        return;
+      }
+
+      if (selectedTime == null) {
+        showMessageDialog(
+          context: context,
+          title: "Opps",
+          message: "Time is required",
         );
         return;
       }
@@ -155,7 +164,7 @@ class _BookingScreenState extends State<BookingScreen> {
       if (startDate == null || endDate == null) {
         showMessageDialog(
           context: context,
-          title: "Error",
+          title: "Opps",
           message: "Date are required",
         );
         return;

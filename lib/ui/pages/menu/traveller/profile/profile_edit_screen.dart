@@ -79,7 +79,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         selectedGender.isEmpty) {
       showMessageDialog(
         context: context,
-        title: "Error",
+        title: "Opps",
         message: "All fields are required",
       );
       return;

@@ -96,7 +96,7 @@ class _TicketDetailsScreen extends State<TicketDetailsScreen> {
             } else if (snapshot.hasError) {
               return Center(child: Text("Error: ${snapshot.error}"));
             } else if (!snapshot.hasData) {
-              return const Center(child: Text("No Data Available"));
+              return noDataScreen("No Data Available");
             }
 
             item = snapshot.data;

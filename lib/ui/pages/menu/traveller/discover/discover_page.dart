@@ -5,6 +5,7 @@ import 'package:travel/data/repositories/restaurant_repository.dart';
 import 'package:travel/ui/widgets/card_holder.dart';
 import 'package:travel/ui/widgets/icon_category.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
+import 'package:travel/ui/widgets/widgets.dart';
 
 class DiscoverPage extends StatelessWidget {
   const DiscoverPage({super.key});
@@ -66,7 +67,7 @@ class DiscoverPage extends StatelessWidget {
                   } else if (snapshot.hasError) {
                     return Center(child: Text("Error: ${snapshot.error}"));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("No data found"));
+                    return noDataScreen("No data found");
                   } else {
                     return _buildHorizontalList(screenWidth, snapshot.data!);
                   }
@@ -86,7 +87,7 @@ class DiscoverPage extends StatelessWidget {
                   } else if (snapshot.hasError) {
                     return Center(child: Text("Error: ${snapshot.error}"));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text("No data found"));
+                    return noDataScreen("No data found");
                   } else {
                     return _buildHorizontalList(screenWidth, snapshot.data!);
                   }

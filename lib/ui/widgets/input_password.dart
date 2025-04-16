@@ -39,7 +39,7 @@ class _InputPasswordState extends State<InputPassword> {
           obscureText: _obscurePassword,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return "this field is required";
+              return "This field is required";
             }
             if (value.length < 6) {
               return "Password must be at least 6 characters";
