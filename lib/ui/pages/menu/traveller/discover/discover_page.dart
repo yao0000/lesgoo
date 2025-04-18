@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
-import 'package:travel/data/repositories/restaurant_repository.dart';
-import 'package:travel/ui/widgets/card_holder.dart';
-import 'package:travel/ui/widgets/icon_category.dart';
+import 'package:travel/data/repositories/restaurant_repository.dart';   
 import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 

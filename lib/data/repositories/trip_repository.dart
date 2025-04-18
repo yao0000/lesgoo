@@ -112,6 +112,9 @@ class TripRepository {
 
       return trips;
     } catch (e) {
+      if (e.toString() == "Exception: No data found") {
+        return [];
+      }
       showToast("Failed ${e.toString()}");
       return [];
     }

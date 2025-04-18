@@ -42,6 +42,9 @@ try {
 
       return data.map((map) => FlightBookingModel.fromJson(map)).toList();
     } catch (e) {
+      if (e.toString() == "Exception: No data found") {
+        return [];
+      }
       showToast(e.toString());
     }
     return [];

@@ -28,7 +28,7 @@ class RestaurantModel {
       name: json['name'] ?? '',
       about: json['about'] ?? '',
       address: json['address'] ?? '',
-      price: (json['price'] ?? 0.00).toDouble(),
+      price: (json['amount'] ?? 0.00).toDouble(),
       rating: (json['rating'] ?? 0.0).toDouble(),
       imageUrl: json['imageUrl'] ?? '',
       gallery:

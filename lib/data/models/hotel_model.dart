@@ -79,14 +79,14 @@ class HotelBookingModel {
 
   factory HotelBookingModel.fromJson(Map<String, dynamic> json) {
     return HotelBookingModel(
-      bookingUid: json["uid"] as String,
-      itemUid: json['itemUid'] as String,
+      bookingUid: json["uid"] ?? "",
+      itemUid: json['itemUid'] ?? "",
       userUid: json['userUid'] as String,
       startDate: (json['startDate'] as Timestamp).toDate(),
       endDate: (json['endDate'] as Timestamp).toDate(),
       roomCount: json['roomCount'] as int,
       totalDays: json['totalDays'] as int,
-      amount: json['price'] ?? '',
+      amount: json['amount'] ?? '',
       createdTime:
           json['createdTime'] != null
               ? (json['createdTime'] as Timestamp).toDate()

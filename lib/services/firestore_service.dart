@@ -70,7 +70,6 @@ class FirestoreService {
         docData['uid'] = doc.id;
         return docData;
       }).toList();
-      
     } catch (e) {
       rethrow;
     }
@@ -120,5 +119,21 @@ class FirestoreService {
     String id,
   ) {
     return _firestore.collection(collection).doc(id).snapshots();
+  }
+
+  static Future<List<Map<String, dynamic>>> getListByItemUid({
+    required String collection,
+    required String itemUid,
+  }) async {
+    QuerySnapshot<Map<String, dynamic>> doc =
+        await _firestore
+            .collection(collection)
+            .where("itemUid", isEqualTo: itemUid)
+            .get();
+
+    if (doc.docs.isEmpty) {
+      throw Exception("No data found");
+    }
+    return doc.docs.map((doc) => doc.data()).toList();
   }
 }

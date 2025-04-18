@@ -3,6 +3,7 @@ import 'package:travel/data/models/function.dart';
 import 'package:travel/ui/pages/auth/signup_screen.dart';
 import 'package:travel/ui/pages/auth/login_screen.dart';
 import 'package:travel/ui/pages/menu/admin/admin_home_screen.dart';
+import 'package:travel/ui/pages/menu/admin/availability/available_detail_screen.dart';
 import 'package:travel/ui/pages/menu/admin/common/item_add_screen.dart';
 import 'package:travel/ui/pages/menu/common/details_screen.dart';
 import 'package:travel/ui/pages/menu/common/list_screen.dart';
@@ -53,7 +54,11 @@ final GoRouter router = GoRouter(
       path: '/list/:type',
       builder: (context, state) {
         final type = state.pathParameters['type']!;
-        return ListScreen(type: type);
+        int mode = 0;
+        if (state.extra != null) {
+          mode = getItem((state.extra as Map<String, int>)['mode']) as int;
+        }
+        return ListScreen(type: type, mode: mode);
       },
     ),
     GoRoute(
@@ -114,7 +119,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final bookingModel = state.extra as dynamic;
         return BoardingPassScreen(bookingModel: getItem(bookingModel));
-      } ,
+      },
     ),
     // for admin
     GoRoute(
@@ -131,17 +136,24 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/userDetail',
-      builder:(context, state) {
+      builder: (context, state) {
         final userUid = state.extra;
         return ProfilePage(userUid: getItem(userUid));
       },
     ),
     GoRoute(
       path: '/ticketList',
-      builder:(context, state) {
+      builder: (context, state) {
         final userUid = state.extra;
         //return UserDetailScreen(user: getItem(user));
         return TicketPage(userUid: getItem(userUid));
+      },
+    ),
+    GoRoute(
+      path: '/available',
+      builder: (context, state) {
+        final item = state.extra as dynamic;
+        return AvailableDetailScreen(item: getItem(item));
       },
     ),
   ],

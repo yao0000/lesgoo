@@ -5,15 +5,16 @@ import 'package:travel/data/repositories/car_repository.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/data/repositories/restaurant_repository.dart';
 import 'package:travel/ui/pages/menu/common/filter_drawer.dart';
-import 'package:travel/ui/widgets/button_action.dart';
 import 'package:travel/ui/widgets/card_object.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ListScreen extends StatefulWidget {
   final String type;
-
-  const ListScreen({super.key, required this.type});
+  final int mode;
+  // mode = 0 > user & admin list screen
+  // mode = 1 > admin track
+  const ListScreen({super.key, required this.type, required this.mode});
 
   @override
   State<StatefulWidget> createState() => _ListScreen();
@@ -263,11 +264,11 @@ class _ListScreen extends State<ListScreen> {
                             padding: const EdgeInsets.all(16),
                             itemCount: list!.length,
                             itemBuilder: (context, index) {
-                              return CardObject(item: list![index]);
+                              return CardObject(item: list![index], isDetail: widget.mode == 0);
                             },
                           ),
                 ),
-                if (Global.user.role == 'admin')
+                if (Global.user.role == 'admin' && widget.mode == 0)
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ButtonAction(

@@ -40,6 +40,21 @@ class HotelRepository {
 class HotelBookingRepository {
   static final String _bookingCollection = "hotelsBooking";
 
+  static Future<List<HotelBookingModel>> getListByHotelId(
+    String hotelUid,
+  ) async {
+    try {
+      List<Map<String, dynamic>> data = await FirestoreService.getListByItemUid(collection: _bookingCollection, itemUid: hotelUid);
+      return data.map((map) => HotelBookingModel.fromJson(map)).toList();
+    } catch (e) {
+      if (e.toString() == "Exception: No data found") {
+        return [];
+      }
+      showToast(e.toString());
+    }
+    return [];
+  }
+
   static Future<List<HotelBookingModel>> getListByUser(String userUid) async {
     try {
       List<Map<String, dynamic>> data = await FirestoreService.getListByUser(
@@ -49,6 +64,9 @@ class HotelBookingRepository {
 
       return data.map((map) => HotelBookingModel.fromJson(map)).toList();
     } catch (e) {
+      if (e.toString() == "Exception: No data found") {
+        return [];
+      }
       showToast(e.toString());
     }
     return [];

@@ -15,7 +15,6 @@ class DetailsScreen extends StatelessWidget {
 
   String _detailsRouting() {
     if (item is HotelModel) {
-      //return "/hotelBooking";
       return "/booking";
     }
     return "/booking";

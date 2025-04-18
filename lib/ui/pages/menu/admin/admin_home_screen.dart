@@ -20,8 +20,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   }
 
   final List<Widget> _pages = [
-    ServicesPage(),
-    Center(child: Text("Itinerary Page", style: TextStyle(fontSize: 20))),
+    ServicesPage(mode: 0),
+    ServicesPage(mode: 1),
     UsersPage()
   ];
 

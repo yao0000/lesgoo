@@ -7,7 +7,8 @@ import 'package:travel/ui/widgets/dialog_msg.dart';
 import 'package:restart_app/restart_app.dart';
 
 class ServicesPage extends StatelessWidget {
-  const ServicesPage({super.key});
+  final int mode;
+  const ServicesPage({super.key, required this.mode});
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +18,8 @@ class ServicesPage extends StatelessWidget {
         backgroundColor: AppColors.adminBg,
         elevation: 0,
         centerTitle: true,
-        title: const Text(
-          "Services",
+        title: Text(
+          mode == 0 ? "Services" : "Track Availability",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -38,10 +39,11 @@ class ServicesPage extends StatelessWidget {
           /*ServiceCard(icon: Icons.hotel, label: "Hotel"),
           ServiceCard(icon: Icons.restaurant, label: "Restaurant"),
           ServiceCard(icon: Icons.directions_car, label: "Transportation"),*/
-          ServiceCard(file: 'service.png', label: "Hotels"),
-          ServiceCard(file: 'Restaurant.png', label: "Restaurant"),
-          ServiceCard(file: 'Car.png', label: "Transportation"),
-          ServiceCard(file: 'logout.png', label: "Log out"),
+          ServiceCard(file: 'service.png', label: "Hotels", mode: mode),
+          ServiceCard(file: 'Restaurant.png', label: "Restaurants", mode: mode),
+          ServiceCard(file: 'Car.png', label: "Cars", mode: mode),
+          if (mode == 0)
+            ServiceCard(file: 'logout.png', label: "Log out", mode: mode),
         ],
       ),
     );
@@ -51,8 +53,9 @@ class ServicesPage extends StatelessWidget {
 class ServiceCard extends StatelessWidget {
   final String file;
   final String label;
+  final int mode;
 
-  const ServiceCard({super.key, required this.file, required this.label});
+  const ServiceCard({super.key, required this.file, required this.label, required this.mode});
 
   Future<void> _signOut(BuildContext context) async {
     bool? confirm = await showConfirmationDialog(
@@ -78,7 +81,7 @@ class ServiceCard extends StatelessWidget {
           Restart.restartApp();
           return;
         }
-        GoRouter.of(context).push('/list/${label.toLowerCase()}');
+        GoRouter.of(context).push('/list/${label.toLowerCase()}', extra: { 'mode': mode });
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),

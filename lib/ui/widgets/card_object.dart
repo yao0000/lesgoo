@@ -5,7 +5,8 @@ import 'package:travel/data/models/function.dart';
 
 class CardObject extends StatelessWidget {
   final dynamic item;
-  CardObject({super.key, required this.item});
+  final bool isDetail;
+  CardObject({super.key, required this.item, required this.isDetail});
   final currencyFormat = NumberFormat.currency(
     locale: "en_US",
     symbol: "\$",
@@ -16,7 +17,12 @@ class CardObject extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.push('/details', extra: item);
+        if (isDetail) {
+          context.push('/details', extra: item);
+        }
+        else {
+          context.push('/available', extra: item);
+        }
       },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

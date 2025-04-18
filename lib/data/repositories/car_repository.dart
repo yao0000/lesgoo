@@ -33,6 +33,22 @@ class CarRepository {
 class CarBookingRepository {
   static final String _bookingCollection = "carsBooking";
 
+  static Future<List<CarBookingModel>> getListById(String uid) async {
+    try {
+      List<Map<String, dynamic>> data = await FirestoreService.getListByItemUid(
+        collection: _bookingCollection,
+        itemUid: uid,
+      );
+      return data.map((map) => CarBookingModel.fromJson(map)).toList();
+    } catch (e) {
+      if (e.toString() == "Exception: No data found") {
+        return [];
+      }
+      showToast(e.toString());
+    }
+    return [];
+  }
+
   static Future<List<CarBookingModel>> getListByUser(String userUid) async {
     try {
       List<Map<String, dynamic>> data = await FirestoreService.getListByUser(
@@ -42,6 +58,9 @@ class CarBookingRepository {
 
       return data.map((map) => CarBookingModel.fromJson(map)).toList();
     } catch (e) {
+      if (e.toString() == "Exception: No data found") {
+        return [];
+      }
       showToast(e.toString());
     }
     return [];
@@ -59,7 +78,7 @@ class CarBookingRepository {
     }
   }
 
-    static Future<bool> delete({required String uid}) async {
+  static Future<bool> delete({required String uid}) async {
     try {
       return await FirestoreService.deleteById(_bookingCollection, uid);
     } catch (e) {
