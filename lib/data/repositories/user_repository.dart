@@ -50,12 +50,12 @@ class UserRepository {
   static Future<String> uploadPhoto(File file) async {
     String fileName =
         AuthService.getCurrentUser()!.uid + path.extension(file.path);
-    String? url = await FirebaseStorageService.uploadFile(
+    String url = await FirebaseStorageService.uploadFile(
       collection,
       file,
       fileName: fileName,
     );
-    return url ?? '';
+    return url;
   }
 
   static Future<bool> update() async {

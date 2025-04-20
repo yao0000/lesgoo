@@ -49,8 +49,12 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Global.user.role == "user" ? AppColors.bgColor : AppColors.adminBg,
-      appBar: Global.user.role == "user" ? TravellerAppBar(title: "Profile") : CustomAppBar(title: "", backgroundColor: AppColors.adminBg),
+      backgroundColor:
+          Global.user.role == "user" ? AppColors.bgColor : AppColors.adminBg,
+      appBar:
+          Global.user.role == "user"
+              ? TravellerAppBar(title: "Profile")
+              : CustomAppBar(title: "", backgroundColor: AppColors.adminBg),
       body: StreamBuilder<UserModel?>(
         stream: UserRepository.getUserStream(userUid),
         builder: (context, snapshot) {
@@ -122,10 +126,10 @@ class ProfilePage extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  InputText(label: "Name", hintText: user.name, readOnly: true),
+                  InputText(label: "Name", hintText: user.name.isEmpty ? "Please set your name" : user.name, readOnly: true),
                   InputText(
                     label: "Phone",
-                    hintText: user.phone,
+                    hintText: user.phone.isEmpty ? "Please set your contact numebr" : user.phone,
                     readOnly: true,
                   ),
                   InputText(
@@ -149,9 +153,18 @@ class ProfilePage extends StatelessWidget {
                   if (Global.user.role == "admin")
                     Column(
                       children: [
-                        ButtonAction(label: "Manage Booking", onPressed: () => context.push('/ticketList', extra: user.uid)),
+                        ButtonAction(
+                          label: "Manage Booking",
+                          onPressed:
+                              () =>
+                                  context.push('/ticketList', extra: user.uid),
+                        ),
                         if (user.role == "user")
-                          ButtonAction(label: "Delete User", btnColor: Colors.red, onPressed: () => _deleteUser(context)),
+                          ButtonAction(
+                            label: "Delete User",
+                            btnColor: Colors.red,
+                            onPressed: () => _deleteUser(context),
+                          ),
                       ],
                     ),
                 ],

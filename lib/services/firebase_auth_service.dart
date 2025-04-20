@@ -13,7 +13,7 @@ class AuthService {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       return true;
     } catch (e) {
-      showToast(e.toString());
+      showToast("Invalid Crendentials");
       return false;
     }
   }

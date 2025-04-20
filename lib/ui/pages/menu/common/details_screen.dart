@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
+import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 import 'package:travel/data/global.dart';
 import 'package:travel/ui/widgets/base/button.dart';
@@ -29,9 +30,43 @@ class DetailsScreen extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: AppColors.bgColor,
           elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () => Navigator.pop(context),
+          automaticallyImplyLeading: false, // Remove default back button
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.pop(context),
+              ),
+              if (Global.user.role == "admin")
+                GestureDetector(
+                  onTap: ()async  {
+                    String dir = '';
+                    if (item is HotelModel) {
+                      dir = 'hotels';
+                    } else if (item is RestaurantModel) {
+                      dir = 'restaurants';
+                    } else {
+                      dir = 'cars';
+                    }
+                    bool? isEdit = await context.push('/itemAdd/$dir', extra: {item: item});
+
+                    if (isEdit == true) {
+                      context.pop(true);
+                    }
+                  },
+                  child: Text(
+                    "Edit",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[700],
+                      backgroundColor: AppColors.bgColor,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
         body: SingleChildScrollView(
@@ -59,7 +94,7 @@ class DetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          getAttribute(item, 'name'),
+                          getAttribute(item, 'name').length > 20 ? getAttribute(item, 'name').substring(0, 20) : getAttribute(item, 'name'),
                           style: TextStyle(
                             fontSize: 25,
                             fontWeight: FontWeight.w900,
@@ -119,6 +154,7 @@ class DetailsScreen extends StatelessWidget {
                       ),
                       SizedBox(height: 10),
                     ],
+                    if (item is RestaurantModel) ..._getCuisine(item),
                     _sectionLabel("Gallery"),
                     SizedBox(height: 5),
                     SingleChildScrollView(
@@ -172,7 +208,29 @@ class DetailsScreen extends StatelessWidget {
                               )
                               : Button(
                                 text: "Delete",
-                                onPressed: () {},
+                                onPressed: () async {
+                                  bool? confirm = await showConfirmationDialog(
+                                    context,
+                                    "Are you sure?",
+                                    "The options will be permanent deleted.",
+                                  );
+
+                                  if (confirm == null || confirm == false) {
+                                    return;
+                                  }
+
+                                  bool isSuccess = false;
+                                  if (item is HotelModel) {
+                                    isSuccess = await HotelRepository.delete(
+                                      uid: item.uid.toString(),
+                                    );
+                                  }
+
+                                  if (isSuccess) {
+                                    showToast("Delete Successfully");
+                                    context.pop(true);
+                                  }
+                                },
                                 buttonColor: Colors.red,
                                 textColor: Colors.black,
                               ),
@@ -185,6 +243,14 @@ class DetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  List<Widget> _getCuisine(RestaurantModel model) {
+    return [
+      _sectionLabel("Cuisine Type"),
+      _sectionContent(model.cuisine),
+      const SizedBox(height: 5),
+    ];
   }
 
   Widget _sectionLabel(String text) {

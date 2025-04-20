@@ -1,10 +1,41 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:travel/data/models/car_model.dart';
+import 'package:travel/services/firebase_storage_service.dart';
 import 'package:travel/services/firestore_service.dart';
 import 'package:travel/ui/widgets/toast.dart';
 
 class CarRepository {
   static final String _collection = "cars";
+
+  static Future<bool> post({required CarModel data}) async {
+    try {
+      return await FirestoreService.post(_collection, data.uid, data.toJson());
+    } catch (e) {
+      showToast("Save failed: ${e.toString()}");
+      return false;
+    }
+  }
+
+  static Future<String> uploadPhoto({
+    required XFile xFile,
+    required String filename,
+  }) async {
+    File file = File(xFile.path);
+    try {
+      return await FirebaseStorageService.uploadFile(
+        _collection,
+        file,
+        fileName: '$filename${path.extension(file.path)}',
+      );
+    } catch (e) {
+      showToast(e.toString());
+      return '';
+    }
+  }
 
   static Future<CarModel?> getItem(String uid) async {
     try {

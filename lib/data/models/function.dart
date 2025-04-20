@@ -16,7 +16,7 @@ dynamic getItem(dynamic obj) {
   return item;
 }
 
-dynamic getAttribute(dynamic obj, String key) {
+dynamic getAttribute(dynamic obj, String key, {int count = 1}) {
   dynamic item = getItem(obj);
 
   if (item is HotelModel) {
@@ -29,7 +29,7 @@ dynamic getAttribute(dynamic obj, String key) {
       case "field4":
         return item.rating.toString();
       case "price":
-        return getPriceFormat(item, 1);
+        return getPriceFormat(item, count);
       case "about":
         return item.about.toString();
       case "imageFacility":
@@ -51,7 +51,7 @@ dynamic getAttribute(dynamic obj, String key) {
       case "field4":
         return item.rating.toString();
       case "price":
-        return getPriceFormat(item, 1);
+        return getPriceFormat(item, count);
       case "about":
         return item.about.toString();
       case "gallery":
@@ -69,7 +69,7 @@ dynamic getAttribute(dynamic obj, String key) {
       case "price":
         return getPriceFormat(item, 1);
       case "field4":
-        return item.seat.toString();
+        return item.rating.toString();
       case "imageUrl":
         return item.imageUrl.toString();
       case "gallery":

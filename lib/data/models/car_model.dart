@@ -7,6 +7,7 @@ class CarModel {
   String address;
   double price;
   double seat;
+  double rating;
   String imageUrl;
 
   List<String> gallery;
@@ -20,11 +21,13 @@ class CarModel {
     required this.seat,
     required this.imageUrl,
     required this.gallery,
+    required this.rating
   });
 
   factory CarModel.fromJson(Map<String, dynamic> json) {
     return CarModel(
       uid: json['uid'] ?? '',
+      rating: (json['rating'] ?? 0.0).toDouble(), 
       name: json['name'] ?? '',
       plate: json['plate'] ?? '',
       price: (json['price'] ?? 0.0).toDouble(),
@@ -41,7 +44,6 @@ class CarModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': uid,
       'name': name,
       'plate': plate,
       'price': price,
@@ -49,6 +51,7 @@ class CarModel {
       'address': address,
       'imageUrl': imageUrl,
       'gallery': gallery,
+      'rating': rating,
     };
   }
 }

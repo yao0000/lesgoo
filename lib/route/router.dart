@@ -131,7 +131,8 @@ final GoRouter router = GoRouter(
       path: '/itemAdd/:type',
       builder: (context, state) {
         final type = state.pathParameters['type']!;
-        return ItemAddScreen(type: type);
+        final item = state.extra as dynamic;
+        return ItemAddScreen(type: type, item: getItem(item));
       },
     ),
     GoRoute(

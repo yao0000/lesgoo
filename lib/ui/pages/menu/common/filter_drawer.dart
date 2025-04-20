@@ -52,7 +52,6 @@ class _FilterDrawer extends State<FilterDrawer> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text("Sort by", style: TextStyle(fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
 
             // Ensure Sort Buttons Take Full Width
             SizedBox(
@@ -64,7 +63,6 @@ class _FilterDrawer extends State<FilterDrawer> {
                     label: "From Highest Price to Lowest",
                     isSelected: localFilterState['desc'] ?? false,
                   ),
-                  SizedBox(height: 8),
                   ButtonAction(
                     onPressed: () => toggleState('asc'),
                     label: "From Lowest Price to Highest",
@@ -74,7 +72,7 @@ class _FilterDrawer extends State<FilterDrawer> {
               ),
             ),
 
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             Text("Ratings", style: TextStyle(fontWeight: FontWeight.bold)),
 
             Wrap(

@@ -19,7 +19,6 @@ class DropdownSelector extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 20),
         Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
         SizedBox(height: 5),
         DropdownButtonFormField<String>(
@@ -31,11 +30,18 @@ class DropdownSelector extends StatelessWidget {
                   ))
               .toList(),
           onChanged: onChanged,
-          decoration: InputDecoration(
+          /*decoration: InputDecoration(
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+          ),*/
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
+            filled: true,
+            fillColor: Colors.white,
           ),
         ),
+        SizedBox(height: 5)
       ],
     );
   }

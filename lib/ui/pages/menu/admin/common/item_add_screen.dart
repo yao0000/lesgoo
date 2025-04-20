@@ -1,27 +1,109 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:travel/data/models/car_model.dart';
+import 'package:travel/data/models/index.dart';
+import 'package:travel/data/repositories/index.dart';
 import 'package:travel/ui/widgets/widgets.dart';
+import 'package:uuid/uuid.dart';
 
 class ItemAddScreen extends StatefulWidget {
   final String type;
-  const ItemAddScreen({super.key, this.type = ''});
+  final dynamic item;
+  const ItemAddScreen({super.key, this.type = '', this.item});
 
   @override
   State<ItemAddScreen> createState() => _ItemAddScreenState();
 }
 
 class _ItemAddScreenState extends State<ItemAddScreen> {
-  final TextEditingController hotelNameController = TextEditingController();
-  final TextEditingController addressController = TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController ratingsController = TextEditingController();
-  final TextEditingController aboutController = TextEditingController();
+  static final List<String> enumRatings = ['1.0', '2.0', '3.0', '4.0', '5.0'];
+
+  static final List<String> enumCuisine = [
+    'Italian',
+    'Chinese',
+    'Indian',
+    'Thai',
+    'French',
+    'Japanese',
+    'Mexican',
+    'Western',
+    'Malay',
+    'Cantonese',
+    'Spanish',
+    'Portuguese',
+    'Greek',
+  ];
+
+  final TextEditingController _field1Controller = TextEditingController();
+  final TextEditingController _field2Controller = TextEditingController();
+  final TextEditingController _field3Controller = TextEditingController();
+  final TextEditingController _field4Controller = TextEditingController();
+  final TextEditingController _field5Controller = TextEditingController();
+  String txtRating = enumRatings[enumRatings.length - 1];
+  String txtCuisine = enumCuisine[0];
 
   XFile? facilityImage;
   XFile? coverImage;
-  XFile? galleryPhoto;
+  XFile? galleryPhoto1;
+  XFile? galleryPhoto2;
+  XFile? galleryPhoto3;
+
+  String urlFacility = "";
+  String urlCover = "";
+  String urlGallery1 = "";
+  String urlGallery2 = "";
+  String urlGallery3 = "";
+
+  bool isNew = false;
+  late dynamic item;
+
+  @override
+  void initState() {
+    super.initState();
+    isNew = widget.item == null;
+
+    if (isNew == false) {
+      item = widget.item;
+
+      urlCover = item.imageUrl.toString();
+
+      urlGallery1 = item.gallery[0].toString();
+      urlGallery2 = item.gallery[1].toString();
+      urlGallery3 = item.gallery[2].toString();
+
+      txtRating = item.rating.toString();
+
+      if (item is HotelModel) {
+        HotelModel model = item as HotelModel;
+
+        _field1Controller.text = model.name.toString();
+        _field2Controller.text = model.address.toString();
+        _field3Controller.text = model.price.toString();
+        _field4Controller.text = model.about.toString();
+
+        urlFacility = model.imageFacility.toString();
+      } else if (item is RestaurantModel) {
+        RestaurantModel model = item as RestaurantModel;
+
+        _field1Controller.text = model.name.toString();
+        _field2Controller.text = model.address.toString();
+        _field3Controller.text = model.price.toString();
+        _field4Controller.text = model.about.toString();
+
+        txtCuisine = model.cuisine.toString();
+      } else if (item is CarModel) {
+        CarModel model = item as CarModel;
+
+        _field1Controller.text = model.name.toString();
+        _field2Controller.text = model.plate.toString();
+        _field3Controller.text = model.seat.toString();
+        _field4Controller.text = model.price.toString();
+        _field5Controller.text = model.address.toString();
+      }
+    }
+  }
 
   Future<void> _pickImage(String type) async {
     final ImagePicker picker = ImagePicker();
@@ -34,21 +116,34 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         } else if (type == "cover") {
           coverImage = image;
         } else if (type == "gallery") {
-          galleryPhoto = image;
+          galleryPhoto1 = image;
+        } else if (type == "gallery2") {
+          galleryPhoto2 = image;
+        } else if (type == "gallery3") {
+          galleryPhoto3 = image;
         }
       });
     }
   }
 
   void _save() async {
-    if (hotelNameController.text.trim().isEmpty ||
-        addressController.text.trim().isEmpty ||
-        priceController.text.trim().isEmpty ||
-        ratingsController.text.trim().isEmpty ||
-        aboutController.text.trim().isEmpty ||
-        facilityImage == null ||
-        coverImage == null ||
-        galleryPhoto == null) {
+    String field1 = _field1Controller.text.trim();
+    String field2 = _field2Controller.text.trim();
+    String field3 = _field3Controller.text.trim();
+    String field4 = _field4Controller.text.trim();
+    String field5 = _field5Controller.text.trim();
+
+    bool isMissOut = !validation();
+
+    /*if (widget.type == "hotels") {
+      isMissOut = isRequiredFieldEmpty() || facilityImage == null;
+    } else if (widget.type == "restaurants") {
+      isMissOut = isRequiredFieldEmpty() || isImageEmpty();
+    } else if (widget.type == "cars") {
+      isMissOut = isRequiredFieldEmpty() || field5.isEmpty;
+    }*/
+
+    if (isMissOut) {
       showMessageDialog(
         title: "Opps",
         message: "All field are required.",
@@ -56,6 +151,171 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       );
       return;
     }
+
+    bool isSuccess = false;
+    var uuid = Uuid();
+    String uid = isNew ? uuid.v1() : item.uid.toString();
+    showLoadingDialog(context, "Saving in progress...");
+    try {
+      if (widget.type == "hotels") {
+        urlFacility =
+            facilityImage == null
+                ? urlFacility
+                : await HotelRepository.uploadPhoto(
+                  xFile: facilityImage!,
+                  filename: '$uid-facility',
+                );
+
+        urlCover = facilityImage == null ? urlCover : await HotelRepository.uploadPhoto(
+          xFile: coverImage!,
+          filename: '$uid-cover',
+        );
+
+        urlGallery1 = galleryPhoto1 == null ? urlGallery1 : await HotelRepository.uploadPhoto(
+          xFile: galleryPhoto1!,
+          filename: '$uid-gallery1',
+        );
+
+        urlGallery2 = galleryPhoto2 == null ? urlGallery2 : await HotelRepository.uploadPhoto(
+          xFile: galleryPhoto2!,
+          filename: '$uid-gallery2',
+        );
+
+        urlGallery3 = galleryPhoto3 == null ? urlGallery3 : await HotelRepository.uploadPhoto(
+          xFile: galleryPhoto3!,
+          filename: '$uid-gallery3',
+        );
+
+        HotelModel model = HotelModel(
+          name: field1,
+          address: field2,
+          price: double.parse(field3),
+          rating: double.parse(txtRating),
+          about: field4,
+          imageFacility: urlFacility,
+          imageUrl: urlCover,
+          gallery: [urlGallery1, urlGallery2, urlGallery3],
+          uid: uid,
+        );
+
+        isSuccess = await HotelRepository.post(data: model);
+      } else if (widget.type == "restaurants") {
+        urlCover = coverImage == null ? urlCover : await RestaurantRepository.uploadPhoto(
+          xFile: coverImage!,
+          filename: '$uid-cover',
+        );
+        urlGallery1 = galleryPhoto1 == null ? urlGallery1 : await RestaurantRepository.uploadPhoto(
+          xFile: galleryPhoto1!,
+          filename: '$uid-gallery1',
+        );
+        urlGallery2 = galleryPhoto2 == null ? urlGallery2 : await RestaurantRepository.uploadPhoto(
+          xFile: galleryPhoto2!,
+          filename: '$uid-gallery2',
+        );
+        urlGallery3 = galleryPhoto3 == null ? urlGallery3 : await RestaurantRepository.uploadPhoto(
+          xFile: galleryPhoto3!,
+          filename: '$uid-gallery3',
+        );
+
+        RestaurantModel model = RestaurantModel(
+          uid: uid,
+          name: field1,
+          address: field2,
+          price: double.parse(field3),
+          rating: double.parse(txtRating),
+          imageUrl: urlCover,
+          gallery: [urlGallery1, urlGallery2, urlGallery3],
+          about: field4,
+          cuisine: txtCuisine,
+        );
+
+        isSuccess = await RestaurantRepository.post(data: model);
+      } else if (widget.type == "cars") {
+        urlCover = coverImage == null ? urlCover : await CarRepository.uploadPhoto(
+          xFile: coverImage!,
+          filename: '$uid-cover',
+        );
+        urlGallery1 = galleryPhoto1 == null ? urlGallery1 : await CarRepository.uploadPhoto(
+          xFile: galleryPhoto1!,
+          filename: '$uid-gallery1',
+        );
+        urlGallery2 = galleryPhoto2 == null ? urlGallery2 : await CarRepository.uploadPhoto(
+          xFile: galleryPhoto2!,
+          filename: '$uid-gallery2',
+        );
+        urlGallery3 = galleryPhoto3 == null ? urlGallery3 : await CarRepository.uploadPhoto(
+          xFile: galleryPhoto3!,
+          filename: '$uid-gallery3',
+        );
+
+        CarModel model = CarModel(
+          uid: uid,
+          name: field1,
+          plate: field2,
+          seat: double.parse(field3),
+          price: double.parse(field4),
+          address: field5,
+
+          rating: double.parse(txtRating),
+          imageUrl: urlCover,
+          gallery: [urlGallery1, urlGallery2, urlGallery3],
+        );
+
+        isSuccess = await CarRepository.post(data: model);
+      }
+      Navigator.pop(context);
+    } catch (e) {
+      Navigator.pop(context);
+      return;
+    }
+
+    if (isSuccess) {
+      showToast("Post successfully");
+      context.pop(true);
+    }
+  }
+
+  bool validation() {
+    String field1 = _field1Controller.text.trim();
+    String field2 = _field2Controller.text.trim();
+    String field3 = _field3Controller.text.trim();
+    String field4 = _field4Controller.text.trim();
+    String field5 = _field5Controller.text.trim();
+    bool isDefaultFieldsMissOut = field1.isEmpty || field2.isEmpty || field3.isEmpty || field4.isEmpty;
+
+    if (isDefaultFieldsMissOut || (item is CarModel && field5.isEmpty)) {
+      return false;
+    }
+
+    // if is not new, the photo ady exist not need to check
+    if (isNew == false){
+      return true;
+    }
+
+    // following check for new fill up which dedicated for photo
+    if (isImageEmpty()) {
+      return false;
+    }
+    if (item is HotelModel && facilityImage == null) {
+      return false;
+    }
+
+    return true;
+  }
+
+  bool isRequiredFieldEmpty() {
+    String field1 = _field1Controller.text.trim();
+    String field2 = _field2Controller.text.trim();
+    String field3 = _field3Controller.text.trim();
+    String field4 = _field4Controller.text.trim();
+    return field1.isEmpty || field2.isEmpty || field3.isEmpty || field4.isEmpty;
+  }
+
+  bool isImageEmpty() {
+    return coverImage == null ||
+        galleryPhoto1 == null ||
+        galleryPhoto2 == null ||
+        galleryPhoto3 == null;
   }
 
   @override
@@ -86,14 +346,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
           children: [
             const Divider(color: Colors.black, thickness: 1),
             const SizedBox(height: 10),
-
-            buildTextField("field1", hotelNameController),
-            buildTextField("field2", addressController),
-            buildTextField("field3", priceController),
-            buildTextField("field4", ratingsController),
-            buildTextField("field5", aboutController),
-
-            if (widget.type == "hotel")
+            ..._getFields(),
+            if (widget.type == "hotels")
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -102,7 +356,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                     "Facilities :",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  uploadButton("facility", _getImageName(facilityImage)),
+                  uploadButton(
+                    "facility",
+                    facilityImage == null
+                        ? urlFacility
+                        : _getImageName(facilityImage),
+                  ),
                 ],
               ),
 
@@ -112,7 +371,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
               "Cover Photo :",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            uploadButton("cover", _getImageName(coverImage)),
+            uploadButton(
+              "cover",
+              coverImage == null ? urlCover : _getImageName(coverImage),
+            ),
 
             // Gallery
             const SizedBox(height: 10),
@@ -120,7 +382,24 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
               "Gallery :",
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            uploadButton("gallery", _getImageName(galleryPhoto)),
+            uploadButton(
+              "gallery",
+              galleryPhoto1 == null
+                  ? urlGallery1
+                  : _getImageName(galleryPhoto1),
+            ),
+            uploadButton(
+              "gallery2",
+              galleryPhoto2 == null
+                  ? urlGallery2
+                  : _getImageName(galleryPhoto2),
+            ),
+            uploadButton(
+              "gallery3",
+              galleryPhoto3 == null
+                  ? urlGallery3
+                  : _getImageName(galleryPhoto3),
+            ),
 
             const SizedBox(height: 20),
             Align(
@@ -146,7 +425,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   }
 
   // Function to create text fields
-  Widget buildTextField(String label, TextEditingController controller) {
+  Widget buildTextField(
+    String label,
+    TextEditingController controller, {
+    bool isAmount = false,
+    bool isInteger = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -157,6 +441,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         const SizedBox(height: 5),
         TextField(
           controller: controller,
+          inputFormatters:
+              isAmount || isInteger
+                  ? [FixedDecimalInputFormatter(allowDecimal: isAmount)]
+                  : [],
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 15),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),
@@ -170,7 +458,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   }
 
   String getFieldLabel(String label) {
-    if (widget.type == "hotel") {
+    if (widget.type == "hotels") {
       if (label == "field1") {
         return "Hotel Name";
       } else if (label == "field2") {
@@ -178,11 +466,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       } else if (label == "field3") {
         return "Price/night";
       } else if (label == "field4") {
-        return "Ratings";
-      } else if (label == "field5") {
         return "Abouts";
       }
-    } else if (widget.type == "restaurant") {
+    } else if (widget.type == "restaurants") {
       if (label == "field1") {
         return "Restaurant Name";
       } else if (label == "field2") {
@@ -190,22 +476,20 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       } else if (label == "field3") {
         return "Price/Pax";
       } else if (label == "field4") {
-        return "Ratings";
-      }
-      else if (label == "field5") {
         return "Abouts";
       }
-    } else if (widget.type == "transportation") {
+    } else if (widget.type == "cars") {
       if (label == "field1") {
         return "Car Type";
       } else if (label == "field2") {
-        return "Num of seats";
+        return "Car Plate";
       } else if (label == "field3") {
-        return "Rental/day";
+        return "Num of seats";
       } else if (label == "field4") {
+        return "Rental/day";
+      } else if (label == "field5") {
         return "Pick Up Point";
-      }
-      else if (label == "field5") {
+      } else if (label == "field6") {
         return "Pick Up Time";
       }
     }
@@ -215,10 +499,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   Widget uploadButton(String type, String? imageName) {
     return Row(
       children: [
-        IconButton(
-          icon: const Icon(Icons.upload, size: 30, color: Colors.black),
-          onPressed: () => _pickImage(type),
-        ),
+        if (type.isNotEmpty)
+          IconButton(
+            icon: const Icon(Icons.upload, size: 30, color: Colors.black),
+            onPressed: () => _pickImage(type),
+          ),
         if (imageName != null)
           Expanded(
             child: Text(
@@ -235,5 +520,79 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       return "";
     }
     return file.name;
+  }
+
+  List<Widget> _getFields() {
+    if (widget.type == "hotels") {
+      return [
+        buildTextField("field1", _field1Controller),
+        buildTextField("field2", _field2Controller),
+        buildTextField("field3", _field3Controller, isAmount: true),
+        _getRatingField(),
+        buildTextField("field4", _field4Controller),
+      ];
+    } else if (widget.type == "restaurants") {
+      return [
+        buildTextField("field1", _field1Controller),
+        buildTextField("field2", _field2Controller),
+        buildTextField("field3", _field3Controller, isInteger: true),
+        _getRatingField(),
+        buildTextField("field4", _field4Controller),
+        _getCuisineField(),
+      ];
+    } else if (widget.type == "cars") {
+      return [
+        buildTextField("field1", _field1Controller),
+        buildTextField("field2", _field2Controller),
+        buildTextField("field3", _field3Controller, isInteger: true),
+        buildTextField("field4", _field4Controller, isAmount: true),
+        buildTextField("field5", _field5Controller),
+        _getRatingField(),
+      ];
+    }
+    return [];
+  }
+
+  Widget _getRatingField() {
+    return DropdownSelector(
+      label: "Rating",
+      value: txtRating,
+      items: enumRatings,
+      onChanged: (value) => setState(() => txtRating = value!),
+    );
+  }
+
+  Widget _getCuisineField() {
+    return DropdownSelector(
+      label: "Rating",
+      value: txtCuisine,
+      items: enumCuisine,
+      onChanged: (value) => setState(() => txtCuisine = value!),
+    );
+  }
+}
+
+class FixedDecimalInputFormatter extends TextInputFormatter {
+  final bool allowDecimal;
+
+  FixedDecimalInputFormatter({this.allowDecimal = false});
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final String newText = newValue.text;
+
+    final RegExp pattern =
+        allowDecimal
+            ? RegExp(r'^\d+(\.\d{0,2})?$') // Allow up to 2 decimal places
+            : RegExp(r'^\d*$'); // Digits only
+
+    if (pattern.hasMatch(newText) || newText.isEmpty) {
+      return newValue; // Allow valid input
+    }
+
+    return oldValue; // Reject invalid input (like preventDefault)
   }
 }

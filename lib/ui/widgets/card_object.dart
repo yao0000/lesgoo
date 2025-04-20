@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/function.dart';
+import 'package:travel/data/models/index.dart';
 
 class CardObject extends StatelessWidget {
   final dynamic item;
@@ -16,11 +18,20 @@ class CardObject extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (isDetail) {
-          context.push('/details', extra: item);
-        }
-        else {
+          bool? isDelete = await context.push('/details', extra: item);
+          if (isDelete == true) {
+            context.pop();
+            if (item is HotelModel) {
+              context.push('/list/hotels');
+            } else if (item is RestaurantModel) {
+              context.push('/list/restaurants');
+            } else if (item is CarModel) {
+              context.push('/list/cars');
+            }
+          }
+        } else {
           context.push('/available', extra: item);
         }
       },

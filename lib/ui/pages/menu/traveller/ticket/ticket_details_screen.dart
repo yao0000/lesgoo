@@ -351,6 +351,7 @@ class _TicketDetailsScreen extends State<TicketDetailsScreen> {
             5,
             (index) => GestureDetector(
               onTap: () {
+                showToast("Rating Successfully");
                 setState(() {
                   selectedRate = index + 1;
                 });

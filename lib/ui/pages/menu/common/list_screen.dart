@@ -131,7 +131,11 @@ class _ListScreen extends State<ListScreen> {
               .where(
                 (item) =>
                     item.name.toLowerCase().contains(query.toLowerCase()) ||
-                    item.address.toLowerCase().contains(query.toLowerCase()),
+                    item.address.toLowerCase().contains(query.toLowerCase()) ||
+                    (widget.type == "restaurants" &&
+                        item.cuisine.toLowerCase().contains(
+                          query.toLowerCase(),
+                        )),
               )
               .toList();
     }
@@ -264,7 +268,10 @@ class _ListScreen extends State<ListScreen> {
                             padding: const EdgeInsets.all(16),
                             itemCount: list!.length,
                             itemBuilder: (context, index) {
-                              return CardObject(item: list![index], isDetail: widget.mode == 0);
+                              return CardObject(
+                                item: list![index],
+                                isDetail: widget.mode == 0,
+                              );
                             },
                           ),
                 ),
@@ -274,10 +281,14 @@ class _ListScreen extends State<ListScreen> {
                     child: ButtonAction(
                       label:
                           "Add New ${widget.type.split(' ').map((word) => word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '').join(' ')}",
-                      onPressed:
-                          () => GoRouter.of(
-                            context,
-                          ).push('/itemAdd/${widget.type}'),
+                      onPressed: () async {
+                        bool? isAddedNew = await GoRouter.of(
+                          context,
+                        ).push('/itemAdd/${widget.type}');
+                        if (isAddedNew == true) {
+                          loadList();
+                        }
+                      },
                     ),
                   ),
               ],

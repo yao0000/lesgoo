@@ -415,14 +415,14 @@ class _BookingScreenState extends State<BookingScreen> {
     if (item is HotelModel) {
       return Column(
         children: [
-          buildDetailRow("Room", getAttribute(item, "price")),
+          buildDetailRow("Room", getAttribute(item, "price", count: count)),
           buildDetailRow("Night", totalDays.toString()),
         ],
       );
     } else if (item is RestaurantModel) {
       return Column(
         children: [
-          buildDetailRow("Price per pax", getAttribute(item, "price")),
+          buildDetailRow("Price per pax", getAttribute(item, "price", count: count)),
           buildDetailRow("Number of pax", count.toString()),
         ],
       );

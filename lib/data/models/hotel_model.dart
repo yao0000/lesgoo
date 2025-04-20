@@ -49,6 +49,9 @@ class HotelModel {
       'name': name,
       'price': price,
       'rating': rating,
+      'imageFacility': imageFacility,
+      'imageUrl': imageUrl,
+      'gallery': gallery
     };
   }
 }

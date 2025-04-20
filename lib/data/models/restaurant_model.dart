@@ -8,6 +8,7 @@ class RestaurantModel {
   final double price;
   final double rating;
   final String imageUrl;
+  final String cuisine;
 
   final List<String> gallery;
 
@@ -20,15 +21,17 @@ class RestaurantModel {
     required this.rating,
     required this.imageUrl,
     required this.gallery,
+    required this.cuisine
   });
 
   factory RestaurantModel.fromJson(Map<String, dynamic> json) {
     return RestaurantModel(
       uid: json['uid'] ?? '',
       name: json['name'] ?? '',
+      cuisine: json['cuisine'] ?? '',
       about: json['about'] ?? '',
       address: json['address'] ?? '',
-      price: (json['amount'] ?? 0.00).toDouble(),
+      price: (json['price'] ?? 0.00).toDouble(),
       rating: (json['rating'] ?? 0.0).toDouble(),
       imageUrl: json['imageUrl'] ?? '',
       gallery:
@@ -41,13 +44,14 @@ class RestaurantModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': uid,
       'name': name,
       'about': about,
       'address': address,
       'price': price,
       'rating': rating,
       'imageUrl': imageUrl,
+      'gallery': gallery,
+      'cuisine': cuisine,
     };
   }
 }
