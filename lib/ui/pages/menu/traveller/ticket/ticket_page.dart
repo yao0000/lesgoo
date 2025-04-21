@@ -95,11 +95,11 @@ class _TicketPageState extends State<TicketPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgColor,
+      backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
       appBar: AppBar(
         centerTitle: true,
         title: Text("Your Ticket"),
-        backgroundColor: AppColors.bgColor,
+        backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
       ),
       body: Column(
         children: [

@@ -296,7 +296,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     if (isImageEmpty()) {
       return false;
     }
-    if (item is HotelModel && facilityImage == null) {
+    if (widget.type == "cars" && facilityImage == null) {
       return false;
     }
 
@@ -403,7 +403,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
             const SizedBox(height: 20),
             Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange,

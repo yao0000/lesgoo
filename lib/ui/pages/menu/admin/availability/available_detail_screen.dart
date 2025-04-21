@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
+import 'package:travel/data/global.dart';
 import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/function.dart';
 
@@ -56,15 +58,26 @@ class _AvailableDetailState extends State<AvailableDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
+      appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              context.pop();
+            },
+          ),
+        ),
       body: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+        padding: EdgeInsets.only(top: 0),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: AppColors.bgColor,
+                color: AppColors.adminBg,
                 width: double.infinity,
                 padding: EdgeInsets.only(bottom: 10, top: 10),
                 child: Center(

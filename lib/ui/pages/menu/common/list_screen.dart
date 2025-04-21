@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/global.dart';
 import 'package:travel/data/repositories/car_repository.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
@@ -181,7 +182,7 @@ class _ListScreen extends State<ListScreen> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
           elevation: 0,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -190,7 +191,7 @@ class _ListScreen extends State<ListScreen> {
             },
           ),
         ),
-        backgroundColor: Colors.blue[100],
+        backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : Colors.blue[100],
         body: Stack(
           children: [
             Column(

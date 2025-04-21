@@ -24,11 +24,11 @@ class DetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[100],
+      backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : Colors.blue[100],
       body: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          backgroundColor: AppColors.bgColor,
+          backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
           elevation: 0,
           automaticallyImplyLeading: false, // Remove default back button
           title: Row(
@@ -61,7 +61,7 @@ class DetailsScreen extends StatelessWidget {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.blue[700],
-                      backgroundColor: AppColors.bgColor,
+                      backgroundColor: Colors.transparent,
                       decoration: TextDecoration.underline,
                     ),
                   ),
@@ -74,7 +74,7 @@ class DetailsScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                color: AppColors.bgColor,
+                color: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
                 width: double.infinity,
                 padding: EdgeInsets.only(bottom: 10),
                 child: Center(
