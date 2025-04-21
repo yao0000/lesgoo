@@ -38,7 +38,7 @@ class _TicketDetailsScreen extends State<TicketDetailsScreen> {
     bool? confirm = await showConfirmationDialog(
       context,
       "Are you sure ?",
-      "The system will cancel the bookings and notify the customer thru email",
+      "The system will cancel the bookings",
     );
 
     if (confirm == null || !confirm) {

@@ -133,7 +133,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     String field4 = _field4Controller.text.trim();
     String field5 = _field5Controller.text.trim();
 
-    bool isMissOut = !validation();
+    bool isInvalid = !validation();
 
     /*if (widget.type == "hotels") {
       isMissOut = isRequiredFieldEmpty() || facilityImage == null;
@@ -143,7 +143,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       isMissOut = isRequiredFieldEmpty() || field5.isEmpty;
     }*/
 
-    if (isMissOut) {
+    if (isInvalid) {
       showMessageDialog(
         title: "Opps",
         message: "All field are required.",
@@ -283,7 +283,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     String field5 = _field5Controller.text.trim();
     bool isDefaultFieldsMissOut = field1.isEmpty || field2.isEmpty || field3.isEmpty || field4.isEmpty;
 
-    if (isDefaultFieldsMissOut || (item is CarModel && field5.isEmpty)) {
+    if (isDefaultFieldsMissOut || (widget.type == "cars" && field5.isEmpty)) {
       return false;
     }
 
@@ -330,7 +330,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
           onPressed: () => context.pop(),
         ),
         title: Text(
-          "Add ${widget.type.split(' ').map((word) => word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '').join(' ')}",
+          "${isNew ? "Add" : "Edit"} ${widget.type.split(' ').map((word) => word.isNotEmpty ? word[0].toUpperCase() + word.substring(1).toLowerCase() : '').join(' ')}",
           style: TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -564,7 +564,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   Widget _getCuisineField() {
     return DropdownSelector(
-      label: "Rating",
+      label: "Cuisine",
       value: txtCuisine,
       items: enumCuisine,
       onChanged: (value) => setState(() => txtCuisine = value!),
