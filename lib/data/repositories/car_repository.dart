@@ -37,6 +37,15 @@ class CarRepository {
     }
   }
 
+  static Future<bool> delete({required String uid}) async {
+    try {
+      return await FirestoreService.deleteById(_collection, uid);
+    } catch (e) {
+      showToast("Delete failed: ${e.toString()}");
+      return false;
+    }
+  }
+
   static Future<CarModel?> getItem(String uid) async {
     try {
       DocumentSnapshot doc = await FirestoreService.getItem(_collection, uid);

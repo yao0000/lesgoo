@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
-import 'package:travel/data/repositories/hotel_repository.dart';
+import 'package:travel/data/repositories/index.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 import 'package:travel/data/global.dart';
 import 'package:travel/ui/widgets/base/button.dart';
@@ -222,6 +222,16 @@ class DetailsScreen extends StatelessWidget {
                                   bool isSuccess = false;
                                   if (item is HotelModel) {
                                     isSuccess = await HotelRepository.delete(
+                                      uid: item.uid.toString(),
+                                    );
+                                  }
+                                  else if (item is RestaurantModel) {
+                                    isSuccess = await RestaurantRepository.delete(
+                                      uid: item.uid.toString(),
+                                    );
+                                  }
+                                  else if (item is CarModel) {
+                                    isSuccess = await CarRepository.delete(
                                       uid: item.uid.toString(),
                                     );
                                   }

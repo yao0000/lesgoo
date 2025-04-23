@@ -32,29 +32,35 @@ class FlightConfirmScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.slateBlue,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+    return WillPopScope(
+      onWillPop: () async {
+        context.pop(true);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.slateBlue,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => context.pop(true),
+          ),
         ),
-      ),
-      body: Container(
-        color: AppColors.bgColor,
-        child: Column(
-          children: [
-            _buildSearchHeader(),
-            _buildBookingDetails(context),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: ButtonAction(
-                label: "Book Now",
-                onPressed: () => _booking(context),
+        body: Container(
+          color: AppColors.bgColor,
+          child: Column(
+            children: [
+              _buildSearchHeader(),
+              _buildBookingDetails(context),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: ButtonAction(
+                  label: "Book Now",
+                  onPressed: () => _booking(context),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

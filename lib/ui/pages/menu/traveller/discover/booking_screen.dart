@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:travel/data/global.dart';
 import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/function.dart';
@@ -9,6 +10,7 @@ import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/data/repositories/restaurant_repository.dart';
 import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
+import 'package:travel/services/local_notification.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 
 class BookingScreen extends StatefulWidget {
@@ -191,18 +193,27 @@ class _BookingScreenState extends State<BookingScreen> {
 
     Navigator.pop(context);
     if (isSuccess) {
+      String sName = "";
+      String sDate = "";
       if (bookingItem is HotelBookingModel) {
         Global.user.notifications[1] = true;
+        sName = "Hotel";
+        sDate = DateFormat("d/M/yyyy").format(bookingItem.startDate.toLocal());
       }
       else if (bookingItem is RestaurantBookingModel){
         Global.user.notifications[2] = true;
+        sName = "Restaurant";
+        sDate = DateFormat("d/M/yyyy").format(bookingItem.time.toLocal());
       }
       else if (bookingItem is CarBookingModel){
         Global.user.notifications[3] = true;
+        sName = "Transportation";
+        sDate = DateFormat("d/M/yyyy").format(bookingItem.startDate.toLocal());
       }
       UserRepository.update();
       Global.updateNotifications();
 
+      showNotification("Hi ${Global.user.name}, your booking for $sName on $sDate has been successfully confirmed. You can view the full details in Ticket");
       showToast("Booking successfully");
       GoRouter.of(
         context,
@@ -422,7 +433,7 @@ class _BookingScreenState extends State<BookingScreen> {
     } else if (item is RestaurantModel) {
       return Column(
         children: [
-          buildDetailRow("Price per pax", getAttribute(item, "price", count: count)),
+          buildDetailRow("Price per pax", getAttribute(item, "price")),
           buildDetailRow("Number of pax", count.toString()),
         ],
       );

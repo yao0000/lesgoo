@@ -4,10 +4,12 @@ import 'package:travel/data/models/trip_model.dart';
 import 'package:travel/data/repositories/index.dart';
 import 'package:travel/services/firebase_service.dart';
 import 'package:travel/route/router.dart';
+import 'package:travel/services/local_notification.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FirebaseService.initialize();
+  initNotificationService();
   //upload();
   //postTrip();
   runApp(const MyApp());

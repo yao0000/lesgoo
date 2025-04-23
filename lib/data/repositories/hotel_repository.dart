@@ -31,7 +31,7 @@ class HotelRepository {
     return null;
   }
 
-    static Future<bool> delete({required String uid}) async {
+  static Future<bool> delete({required String uid}) async {
     try {
       return await FirestoreService.deleteById(_collection, uid);
     } catch (e) {

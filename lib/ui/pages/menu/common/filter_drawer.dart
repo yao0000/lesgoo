@@ -4,11 +4,13 @@ import 'package:travel/ui/widgets/widgets.dart';
 class FilterDrawer extends StatefulWidget {
   final Function(String) toggleState;
   final Map<String, bool> filterState;
+  final bool isCar;
 
   const FilterDrawer({
     super.key,
     required this.toggleState,
     required this.filterState,
+    required this.isCar,
   });
 
   @override
@@ -21,17 +23,20 @@ class _FilterDrawer extends State<FilterDrawer> {
   @override
   void initState() {
     super.initState();
-    localFilterState = Map.from(widget.filterState); 
+    localFilterState = Map.from(widget.filterState);
   }
 
   void toggleState(String key) {
-    
     setState(() {
       localFilterState[key] = !localFilterState[key]!;
       widget.toggleState(key);
-      if (key == 'desc' && localFilterState[key]! == true && localFilterState['asc'] == true){
+      if (key == 'desc' &&
+          localFilterState[key]! == true &&
+          localFilterState['asc'] == true) {
         toggleState('asc');
-      }else if (key == 'asc' && localFilterState[key]! == true && localFilterState['desc'] == true){
+      } else if (key == 'asc' &&
+          localFilterState[key]! == true &&
+          localFilterState['desc'] == true) {
         toggleState('desc');
       }
     });
@@ -101,7 +106,25 @@ class _FilterDrawer extends State<FilterDrawer> {
                 ),
               ],
             ),
-
+            if (widget.isCar)
+              Text("Seats", style: TextStyle(fontWeight: FontWeight.bold)),
+            if (widget.isCar)
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  ButtonAction(
+                    onPressed: () => toggleState('7s'),
+                    label: "7 Seats",
+                    isSelected: localFilterState['7s'] ?? false,
+                  ),
+                  ButtonAction(
+                    onPressed: () => toggleState('5s'),
+                    label: "5 Seats",
+                    isSelected: localFilterState['5s'] ?? false,
+                  ),
+                ],
+              ),
             SizedBox(height: 16),
             Center(
               child: ElevatedButton(

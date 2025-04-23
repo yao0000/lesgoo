@@ -40,7 +40,7 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(bookingModel.isRoundTrip),
         ),
       ),
       body: Container(
@@ -54,7 +54,8 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
                       ? noDataScreen("No records found")
                       : ListView.builder(
                         itemCount: list.length,
-                        itemBuilder: (context, index) => _buildFlightCard(list[index]),
+                        itemBuilder:
+                            (context, index) => _buildFlightCard(list[index]),
                       ),
             ),
           ],
@@ -85,9 +86,15 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 5),
-              Text(bookingModel.departureDate, style: TextStyle(color: Colors.white70)),
+              Text(
+                bookingModel.departureDate,
+                style: TextStyle(color: Colors.white70),
+              ),
               const SizedBox(height: 10),
-              Text('${bookingModel.pax} Pax', style: TextStyle(color: Colors.white70)),
+              Text(
+                '${bookingModel.pax} Pax',
+                style: TextStyle(color: Colors.white70),
+              ),
             ],
           ),
           Icon(Icons.arrow_forward, color: Colors.white, size: 50),
@@ -99,7 +106,10 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 5),
-              Text(bookingModel.returnDate, style: TextStyle(color: Colors.white70)),
+              Text(
+                bookingModel.returnDate,
+                style: TextStyle(color: Colors.white70),
+              ),
               const SizedBox(height: 10),
               Text(bookingModel.type, style: TextStyle(color: Colors.white70)),
             ],
@@ -110,72 +120,151 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
   }
 
   Widget _buildFlightCard(ScheduleModel scheduleModel) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              scheduleModel.id,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-            const SizedBox(height: 15),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Spacer(),
-                _buildScheduleDetails(scheduleModel.departureTime, bookingModel.departure),
-                Spacer(),
-                Icon(Icons.flight_takeoff, size: 24),
-                Spacer(),
-                _buildScheduleDetails(scheduleModel.arrivalTime, bookingModel.destination),
-                Spacer(),
-              ],
-            ),
-            SizedBox(height: 10),
-            Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const SizedBox(width: 16),
-                Column(
-                  children: [
-                    Text(
-                      getPriceFormat(scheduleModel, bookingModel.type == "Economy" ? 1 : 3),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+    return WillPopScope(
+      onWillPop: () async {
+        context.pop(true);
+        return false;
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        margin: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                scheduleModel.id,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Spacer(),
+                  _buildScheduleDetails(
+                    scheduleModel.departureTime,
+                    bookingModel.departure,
+                  ),
+                  Spacer(),
+                  Icon(Icons.flight_takeoff, size: 24),
+                  Spacer(),
+                  _buildScheduleDetails(
+                    scheduleModel.arrivalTime,
+                    bookingModel.destination,
+                  ),
+                  Spacer(),
+                ],
+              ),
+              SizedBox(height: 10),
+              Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(width: 16),
+                  Column(
+                    children: [
+                      Text(
+                        getPriceFormat(
+                          scheduleModel,
+                          bookingModel.type == "Economy" ? 1 : 3,
+                        ),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
                       ),
-                    ),
-                    Text('/Pax'),
-                  ],
-                ),
-                Spacer(),
-                ButtonAction(
-                  label: "Select",
-                  onPressed: () {
-                    bookingModel.amount += (scheduleModel.price * ( bookingModel.type == "Economy" ? 1 : 3) * bookingModel.pax);
+                      Text('/Pax'),
+                    ],
+                  ),
+                  Spacer(),
+                  ButtonAction(
+                    label: "Select",
+                    onPressed: () async {
+                      double newAmount =
+                          (scheduleModel.price *
+                              (bookingModel.type == "Economy" ? 1 : 3) *
+                              bookingModel.pax);
+                      bookingModel.amount += newAmount;
 
-                    if (bookingModel.departureTrip == null) {
-                      bookingModel.departureTrip = scheduleModel; 
+                      if (bookingModel.isRoundTrip) {
+                        if (bookingModel.departureTrip == null) {
+                          bookingModel.departureTrip = scheduleModel;
+
+                          bool? isReturn = await context.push(
+                            '/flightsList',
+                            extra: bookingModel,
+                          );
+                          if (isReturn == true) {
+                            bookingModel.departureTrip = null;
+                            bookingModel.amount -= newAmount;
+                            //context.push('/flightsList', extra: bookingModel);
+                          }
+                        } else {
+                          bookingModel.returnTrip = scheduleModel;
+
+                          bool? isReturn = await context.push(
+                            '/flightBooking',
+                            extra: bookingModel,
+                          );
+                          if (isReturn == true) {
+                            bookingModel.returnTrip = null;
+                            bookingModel.amount -= newAmount;
+                            //context.push('/flightsList', extra: bookingModel);
+                          }
+                        }
+                      } else {
+                        bookingModel.departureTrip = scheduleModel;
+                        context.push('/flightBooking', extra: bookingModel);
+                      }
+
+                      /*if (bookingModel.departureTrip == null) {
+                      bookingModel.departureTrip = scheduleModel;
                     } else {
                       bookingModel.returnTrip ??= scheduleModel;
-                    } 
-                    
-                    if (bookingModel.isRoundTrip && bookingModel.returnTrip == null) {
-                      GoRouter.of(context).push('/flightsList', extra: bookingModel);
+                    }
+
+                    if (bookingModel.isRoundTrip &&
+                        bookingModel.returnTrip == null) {
+                      bool? isReturn = await GoRouter.of(
+                        context,
+                      ).push('/flightsList', extra: bookingModel);
+
+                      if (isReturn == true) {
+                        bookingModel.departureTrip = null;
+                        bookingModel.amount = 0;
+                        GoRouter.of(
+                          context,
+                        ).replace('/flightsList', extra: bookingModel);
+                      }
+
                       return;
                     }
-                    GoRouter.of(context).push('/flightBooking', extra: bookingModel);
-                  },
-                ),
-                const SizedBox(width: 10),
-              ],
-            ),
-          ],
+
+                    bool? isReturn = await context.push(
+                      '/flightBooking',
+                      extra: bookingModel,
+                    );
+                    if (isReturn == true) {
+                      if (bookingModel.isRoundTrip &&
+                          bookingModel.returnTrip != null) {
+                        bookingModel.returnTrip = null;
+                        bookingModel.amount -= newAmount;
+                      } else {
+                        bookingModel.departureTrip = null;
+                        bookingModel.amount = 0;
+                      }
+                      GoRouter.of(
+                        context,
+                      ).replace('/flightsList', extra: bookingModel);
+                    }*/
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -185,10 +274,7 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          time,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-        ),
+        Text(time, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
         const SizedBox(height: 10),
         Text(place),
       ],

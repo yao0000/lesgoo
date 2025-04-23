@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/global.dart';
+import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/repositories/car_repository.dart';
 import 'package:travel/data/repositories/hotel_repository.dart';
 import 'package:travel/data/repositories/restaurant_repository.dart';
@@ -37,6 +38,8 @@ class _ListScreen extends State<ListScreen> {
     '4': false,
     '3': false,
     '2': false,
+    '7s': false,
+    '5s': false,
   };
 
   void toggleFilterState(String key) {
@@ -62,15 +65,26 @@ class _ListScreen extends State<ListScreen> {
   }
 
   void openFilterDrawer(BuildContext context) {
+    bool isCar = widget.type == "cars";
     showModalBottomSheet(
       context: context,
-      shape: RoundedRectangleBorder(
+      isScrollControlled: true, // Important to allow full height customization
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
-        return FilterDrawer(
-          toggleState: toggleFilterState,
-          filterState: filterState,
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize:  isCar ? 0.7 : 0.6, // 60% of screen height, adjust as needed
+          minChildSize: 0.3,
+          maxChildSize: 0.9,
+          builder: (context, scrollController) {
+            return FilterDrawer(
+              toggleState: toggleFilterState,
+              filterState: filterState,
+              isCar: isCar
+            );
+          },
         );
       },
     );
@@ -117,10 +131,14 @@ class _ListScreen extends State<ListScreen> {
                         (filterState['3'] == true &&
                             (item.rating >= 3.0 && item.rating < 4.0)) ||
                         (filterState['2'] == true && item.rating < 3.0) ||
+                        (item is CarModel && filterState['7s'] == true && item.seat == 7) ||
+                        (item is CarModel && filterState['5s'] == true && item.seat == 5) || 
                         (filterState['5'] == false &&
                             filterState['4'] == false &&
                             filterState['3'] == false &&
-                            filterState['2'] == false),
+                            filterState['2'] == false &&
+                            filterState['7s'] == false &&
+                            filterState["5s"] == false),
                   )
                   .toList();
     });
@@ -182,7 +200,10 @@ class _ListScreen extends State<ListScreen> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
-          backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
+          backgroundColor:
+              Global.user.role == "admin"
+                  ? AppColors.adminBg
+                  : AppColors.bgColor,
           elevation: 0,
           leading: IconButton(
             icon: Icon(Icons.arrow_back),
@@ -191,7 +212,8 @@ class _ListScreen extends State<ListScreen> {
             },
           ),
         ),
-        backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : Colors.blue[100],
+        backgroundColor:
+            Global.user.role == "admin" ? AppColors.adminBg : Colors.blue[100],
         body: Stack(
           children: [
             Column(

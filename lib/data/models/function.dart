@@ -54,6 +54,8 @@ dynamic getAttribute(dynamic obj, String key, {int count = 1}) {
         return getPriceFormat(item, count);
       case "about":
         return item.about.toString();
+      case "field3":
+        return item.cuisine.toString();
       case "gallery":
         return item.gallery;
     }
