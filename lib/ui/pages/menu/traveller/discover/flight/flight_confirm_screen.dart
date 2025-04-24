@@ -7,6 +7,7 @@ import 'package:travel/data/models/function.dart';
 import 'package:travel/data/repositories/flight_repository.dart';
 import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/services/firebase_auth_service.dart';
+import 'package:travel/services/local_notification.dart';
 import 'package:travel/ui/widgets/widgets.dart';
 
 class FlightConfirmScreen extends StatelessWidget {
@@ -23,6 +24,9 @@ class FlightConfirmScreen extends StatelessWidget {
       Global.user.notifications[0] = true;
       UserRepository.update();
       Global.updateNotifications();
+      showNotification(
+        "Hi ${Global.user.name}, your flight on ${bookingModel.departureDate} ${bookingModel.departureTrip!.id} from ${bookingModel.departure} to ${bookingModel.destination} is confirmed! You can view the details in ticket!",
+      );
       showToast("Booking successfully");
       GoRouter.of(
         context,

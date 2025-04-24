@@ -82,12 +82,12 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                bookingModel.departure,
+                (bookingModel.isRoundTrip && bookingModel.departureTrip != null) ? bookingModel.destination : bookingModel.departure,
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 5),
               Text(
-                bookingModel.departureDate,
+                (bookingModel.isRoundTrip && bookingModel.departureTrip != null) ? bookingModel.returnDate : bookingModel.departureDate,
                 style: TextStyle(color: Colors.white70),
               ),
               const SizedBox(height: 10),
@@ -102,12 +102,12 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                bookingModel.destination,
+                (bookingModel.isRoundTrip && bookingModel.departureTrip != null) ? bookingModel.departure : bookingModel.destination,
                 style: TextStyle(color: Colors.white, fontSize: 18),
               ),
               const SizedBox(height: 5),
               Text(
-                bookingModel.returnDate,
+                (bookingModel.isRoundTrip && bookingModel.departureTrip != null) ? bookingModel.returnDate : bookingModel.departureDate,
                 style: TextStyle(color: Colors.white70),
               ),
               const SizedBox(height: 10),
