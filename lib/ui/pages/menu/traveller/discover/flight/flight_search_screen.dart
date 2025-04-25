@@ -49,6 +49,15 @@ class _FlightSearchScreenState extends State<FlightSearchScreen> {
       return;
     }
 
+    if (fromController.value.text.trim() == toController.value.text.trim()) {
+      showMessageDialog(
+        context: context,
+        title: "Opps",
+        message: "Departure and Destination cannot be the same",
+      );
+      return;
+    }
+
     int? pax = int.tryParse(passengerController.text.trim());
 
     if (pax == null) {

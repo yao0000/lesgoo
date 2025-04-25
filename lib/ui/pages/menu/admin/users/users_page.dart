@@ -30,6 +30,7 @@ class _UserPageState extends State<UsersPage> {
 
   Future<void> _loadUsers() async {
     List<UserModel> tempList = await UserRepository.getList();
+    tempList = tempList.where((element) => element.role == "user").toList();
     setState(() {
       fetchList = tempList;
       list = tempList;

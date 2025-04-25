@@ -259,8 +259,8 @@ class _ListScreen extends State<ListScreen> {
                                     showDropdown = false;
                                   });
                                 },
-                                decoration: const InputDecoration(
-                                  hintText: 'Search by name & location...',
+                                decoration: InputDecoration(
+                                  hintText: _getSearchHint(),
                                   border: InputBorder.none,
                                   contentPadding: EdgeInsets.symmetric(
                                     vertical: 15,
@@ -366,5 +366,17 @@ class _ListScreen extends State<ListScreen> {
         ),
       ),
     );
+  }
+
+  String _getSearchHint() {
+    String hint = "Search by ";
+    if (widget.type == "hotels") {
+      hint += "name & location";
+    } else if (widget.type == "restaurants") {
+      hint += "name, cuisine type, location";
+    } else {
+      hint += "name";
+    }
+    return hint;
   }
 }
