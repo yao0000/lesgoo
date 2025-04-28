@@ -31,7 +31,7 @@ Future<void> requestNotificationPermission() async {
 }
 
 void showNotification(String message) async {
-  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+  const AndroidNotificationDetails androidPlatformChannelSpecifics = 
       AndroidNotificationDetails(
         'lesgoo_notification',
         'lesgoo_notification',

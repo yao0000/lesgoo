@@ -3,11 +3,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
 import 'package:travel/data/global.dart';
-import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/flight_repository.dart';
 import 'package:travel/data/repositories/index.dart';
-import 'package:travel/data/repositories/user_repository.dart';
 import 'package:travel/ui/widgets/container_no_data.dart';
 
 class TicketPage extends StatefulWidget {
@@ -98,7 +96,7 @@ class _TicketPageState extends State<TicketPage> {
       backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Your Ticket"),
+        title: Text("Bookings"),
         backgroundColor: Global.user.role == "admin" ? AppColors.adminBg : AppColors.bgColor,
       ),
       body: Column(

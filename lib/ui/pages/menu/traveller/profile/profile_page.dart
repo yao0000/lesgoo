@@ -32,7 +32,7 @@ class ProfilePage extends StatelessWidget {
   void _deleteUser(BuildContext context) async {
     bool? confirm = await showConfirmationDialog(
       context,
-      "Logout",
+      "Are You Sure?",
       "The user will be permanent deleted",
     );
 

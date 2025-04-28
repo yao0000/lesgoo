@@ -24,12 +24,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final List<Widget> _pages = [
-    //Center(child: Text("Discover Page", style: TextStyle(fontSize: 20))),
     DiscoverPage(),
-    //Center(child: Text("Itinerary Page", style: TextStyle(fontSize: 20))),
     ItineraryPage(),
     TicketPage(userUid: AuthService.getCurrentUser()!.uid),
-    //Center(child: Text("Tickets Page", style: TextStyle(fontSize: 20))),
     ProfilePage(userUid: AuthService.getCurrentUser()!.uid),
   ];
 

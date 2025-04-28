@@ -87,27 +87,11 @@ class TripRepository {
                 entry.value["endDate"] != null
                     ? (entry.value["endDate"] as Timestamp).toDate()
                     : DateTime.now(),
+            budget: (entry.value["budget"] ?? 0.0).toDouble(), // Add this line
             dayList: schedules,
           ),
         );
         }
-
-        /*dynamic obj = data.entries.first.value;
-        trips.add(
-          TripModel(
-            uid: data.entries.first.key,
-            name: obj["name"] ?? "Unnamed Trip",
-            startDate:
-                obj["startDate"] != null
-                    ? (obj["startDate"] as Timestamp).toDate()
-                    : DateTime.now(),
-            endDate:
-                obj["endDate"] != null
-                    ? (obj["endDate"] as Timestamp).toDate()
-                    : DateTime.now(),
-            dayList: schedules,
-          ),
-        );*/
       }
 
       return trips;

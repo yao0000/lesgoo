@@ -36,9 +36,6 @@ class ServicesPage extends StatelessWidget {
             endIndent: 40,
           ),
           const SizedBox(height: 20),
-          /*ServiceCard(icon: Icons.hotel, label: "Hotel"),
-          ServiceCard(icon: Icons.restaurant, label: "Restaurant"),
-          ServiceCard(icon: Icons.directions_car, label: "Transportation"),*/
           ServiceCard(file: 'service.png', label: "Hotels", mode: mode),
           ServiceCard(file: 'Restaurant.png', label: "Restaurants", mode: mode),
           ServiceCard(file: 'Car.png', label: "Cars", mode: mode),
@@ -55,9 +52,14 @@ class ServiceCard extends StatelessWidget {
   final String label;
   final int mode;
 
-  const ServiceCard({super.key, required this.file, required this.label, required this.mode});
+  const ServiceCard({
+    super.key,
+    required this.file,
+    required this.label,
+    required this.mode,
+  });
 
-  Future<void> _signOut(BuildContext context) async {
+  Future<bool> _signOut(BuildContext context) async {
     bool? confirm = await showConfirmationDialog(
       context,
       "Logout",
@@ -70,6 +72,8 @@ class ServiceCard extends StatelessWidget {
       Navigator.pop(context);
       context.go('/login');
     }
+
+    return confirm ?? false;
   }
 
   @override
@@ -77,11 +81,15 @@ class ServiceCard extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         if (file == "logout.png") {
-          await _signOut(context);
-          Restart.restartApp();
+          bool isLogout = await _signOut(context);
+          if (isLogout == true) {
+            Restart.restartApp();
+          }
           return;
         }
-        GoRouter.of(context).push('/list/${label.toLowerCase()}', extra: { 'mode': mode });
+        GoRouter.of(
+          context,
+        ).push('/list/${label.toLowerCase()}', extra: {'mode': mode});
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -94,13 +102,11 @@ class ServiceCard extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              //Icon(icon, size: 30, color: Colors.indigo[900]),
               Image.asset(
-                'assets/img/$file', // Make sure the image is in your assets folder
+                'assets/img/$file',
                 width: 30,
                 height: 30,
-                color:
-                    Colors.indigo[900], // This works only for monochrome images
+                color: Colors.indigo[900],
               ),
               const SizedBox(width: 10),
               Text(

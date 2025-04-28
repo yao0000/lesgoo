@@ -140,6 +140,7 @@ class _ItineraryPage extends State<ItineraryPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Duration: ${tripModel.dayList.length} days"),
+            Text("Trip Budget: ${tripModel.budget}"),
             Align(
               alignment: Alignment.centerRight,
               child: Row(
@@ -172,9 +173,9 @@ class _ItineraryPage extends State<ItineraryPage> {
     DateTime todayOnly = DateTime(today.year, today.month, today.day);
 
     if (todayOnly.isBefore(startDate)) {
-    return Colors.grey; // Before start date
+    return Colors.red; // Before start date
   } else if (todayOnly.isAfter(endDate)) {
-    return Colors.red; // After end date
+    return Colors.grey; // After end date
   } else {
     return Colors.green; // Between start and end date
   }

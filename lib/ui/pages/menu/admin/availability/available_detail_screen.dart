@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
-import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/function.dart';
 
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/index.dart';
-import 'package:travel/data/repositories/user_repository.dart';
 
 class AvailableDetailScreen extends StatefulWidget {
   final dynamic item;

@@ -58,6 +58,40 @@ class _ItineraryDetailsScreenState extends State<ItineraryDetailsScreen> {
             ),
           ),
           const Divider(height: 1),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      Icons.account_balance_wallet,
+                      color: AppColors.navyBlue,
+                      size: 24,
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Total Budget:',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  ' ${widget.trip.budget.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Color.fromARGB(255, 2, 30, 72),
+                  ),
+                ),
+              ],
+            ),
+          ),
           // Schedule list
           Expanded(
             child: ListView.builder(
@@ -122,8 +156,9 @@ class _ItineraryDetailsScreenState extends State<ItineraryDetailsScreen> {
   }
 
   Widget _buildSchedule(TripDetails schedule) {
-    final timeText = '${schedule.time!.hour}:${schedule.time!.minute.toString().padLeft(2, '0')}';
-    
+    final timeText =
+        '${schedule.time!.hour}:${schedule.time!.minute.toString().padLeft(2, '0')}';
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Row(
@@ -135,17 +170,21 @@ class _ItineraryDetailsScreenState extends State<ItineraryDetailsScreen> {
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(
-                  color: Colors.indigo[800]!,
-                  width: 1.5,
+                //color: const Color.fromARGB(255, 209, 227, 231),
+                border: Border(
+                  bottom: BorderSide(
+                    // Only bottom border
+                    color: const Color.fromARGB(255, 73, 81, 138),
+                    width: 1.5,
+                  ),
                 ),
                 borderRadius: BorderRadius.circular(10),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.2),
                     blurRadius: 4,
-                    offset: const Offset(0, 2),)
+                    offset: const Offset(0, 2),
+                  ),
                 ],
               ),
               child: Row(
@@ -161,12 +200,8 @@ class _ItineraryDetailsScreenState extends State<ItineraryDetailsScreen> {
                   ),
                   Text(
                     timeText,
-                    style: TextStyle(
-                      color: Colors.grey[900],
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.grey[900], fontSize: 14),
                   ),
-                  
                 ],
               ),
             ),

@@ -85,9 +85,9 @@ class _UserPageState extends State<UsersPage> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          showDropdown = false; // Hide dropdown when tapping outside
+          showDropdown = false;
         });
-        FocusScope.of(context).unfocus(); // Close keyboard if open
+        FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         backgroundColor: AppColors.adminBg,
@@ -188,9 +188,9 @@ class _UserPageState extends State<UsersPage> {
                               setState(() {
                                 searchHistory.removeAt(
                                   index,
-                                ); // Remove item from the list
+                                );
                               });
-                              saveSearchHistoryToStorage(); // Update storage
+                              saveSearchHistoryToStorage();
                             },
                           ),
                           onTap: () {

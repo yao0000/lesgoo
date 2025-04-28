@@ -158,7 +158,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                 : Image.file(
                                   File(
                                     profileImage!.path,
-                                  ), // Convert XFile to File
+                                  ), 
                                   height: 120,
                                   width: 120,
                                   fit: BoxFit.cover,

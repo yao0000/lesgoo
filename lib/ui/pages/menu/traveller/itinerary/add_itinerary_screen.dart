@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
@@ -14,6 +15,7 @@ class AddItineraryScreen extends StatefulWidget {
 
 class _AddItineraryScreen extends State<AddItineraryScreen> {
   final _nameController = TextEditingController();
+  final _budgetController = TextEditingController(); 
   DateTime? _startDate;
   DateTime? _endDate;
   int _duration = 1;
@@ -23,6 +25,7 @@ class _AddItineraryScreen extends State<AddItineraryScreen> {
     super.initState();
     _startDate = DateTime.now();
     _endDate = DateTime.now();
+    _budgetController.text = '0.00'; // Initialize with default value
   }
 
   DateTime _getDefaultDateTime(bool isStartDate) {
@@ -95,7 +98,8 @@ class _AddItineraryScreen extends State<AddItineraryScreen> {
   void _onSubmit() async {
     if (_nameController.text.trim().isEmpty ||
         _startDate == null ||
-        _endDate == null) {
+        _endDate == null || 
+        _budgetController.text.isEmpty) {
       showMessageDialog(
         context: context,
         title: "Opps",
@@ -103,10 +107,13 @@ class _AddItineraryScreen extends State<AddItineraryScreen> {
       );
       return;
     }
+
+    final budget = double.tryParse(_budgetController.text) ?? 0.00;
     TripModel tripModel = TripModel(
       name: _nameController.text.trim(),
       startDate: _startDate!,
       endDate: _endDate!,
+      budget: budget,
       dayList: List.generate(
         _duration,
         (index) => TripSchedule(date: _startDate!.add(Duration(days: index))),
@@ -171,6 +178,31 @@ class _AddItineraryScreen extends State<AddItineraryScreen> {
               Text(
                 'Duration: $_duration Days',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Total Budget',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              const SizedBox(height: 8),
+              TextFormField(
+                controller: _budgetController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                ],
+                decoration: InputDecoration(
+                  hintText: 'Enter total budget',
+                  //prefixText: 'RM ',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               Center(

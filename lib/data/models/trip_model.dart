@@ -5,12 +5,14 @@ class TripModel {
   String name;
   DateTime startDate;
   DateTime endDate;
+  double budget;// Add this
   List<TripSchedule> dayList;
 
   TripModel({
     required this.name,
     required this.startDate,
     required this.endDate,
+    required this.budget,// Add this
     required this.dayList,
     this.uid
   });
@@ -20,6 +22,7 @@ class TripModel {
       'name': name,
       'startDate': startDate.toUtc(),
       'endDate': endDate.toUtc(),
+      'budget': budget, // Add this
       'dayList': dayList.map((day) => day.toJson()).toList(),
     };
   }

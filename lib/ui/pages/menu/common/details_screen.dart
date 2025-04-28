@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/constants/app_colors.dart';
-import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/index.dart';
 import 'package:travel/ui/widgets/widgets.dart';
@@ -13,13 +12,6 @@ import 'package:travel/data/models/function.dart';
 class DetailsScreen extends StatelessWidget {
   final dynamic item;
   const DetailsScreen({super.key, required this.item});
-
-  String _detailsRouting() {
-    if (item is HotelModel) {
-      return "/booking";
-    }
-    return "/booking";
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -187,13 +179,6 @@ class DetailsScreen extends StatelessWidget {
                       _sectionLabel("Pick Up Time: "),
                       _sectionContent(getAttribute(item, 'time')),
                     ],
-                    /*_sectionLabel("Rate Us"),
-                    Row(
-                      children: List.generate(
-                        5,
-                        (index) => Icon(Icons.star, color: Colors.black),
-                      ),
-                    ),*/
                     SizedBox(height: 20),
                     Center(
                       child:
@@ -202,7 +187,7 @@ class DetailsScreen extends StatelessWidget {
                                 label: "Choose your date",
                                 onPressed:
                                     () => GoRouter.of(context).push(
-                                      _detailsRouting(),
+                                      "/booking",
                                       extra: {item: item},
                                     ),
                               )

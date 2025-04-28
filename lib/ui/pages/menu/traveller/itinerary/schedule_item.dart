@@ -66,7 +66,7 @@ class _ScheduleItemState extends State<ScheduleItem> {
                   Text(
                     time == null
                         ? "[00:00]"
-                        : "[${time!.hour.toString().padLeft(2, '0')}:${time!.minute.toString().padLeft(2, '0')}]",
+                        : "${time!.hour.toString().padLeft(2, '0')}:${time!.minute.toString().padLeft(2, '0')}",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14),
                   ),
@@ -78,18 +78,18 @@ class _ScheduleItemState extends State<ScheduleItem> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                border: Border.all(color: AppColors.navyBlue), // Custom border
-                borderRadius: BorderRadius.circular(30), // Rounded corners
+                border: Border.all(color: AppColors.navyBlue), 
+                borderRadius: BorderRadius.circular(30), 
               ),
               padding: EdgeInsets.symmetric(
                 horizontal: 12,
-              ), // Add padding inside the box
+              ), 
               child: TextField(
                 controller: _taskController,
                 onChanged: (newValue) {
                   widget.onTaskChanged(newValue);
                 },
-                decoration: InputDecoration(hintText: "[Task/Description]"),
+                decoration: InputDecoration(hintText: "Task/Description"),
               ),
             ),
           ),

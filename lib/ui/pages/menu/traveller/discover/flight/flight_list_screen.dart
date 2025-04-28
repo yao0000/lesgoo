@@ -198,7 +198,6 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
                           if (isReturn == true) {
                             bookingModel.departureTrip = null;
                             bookingModel.amount -= newAmount;
-                            //context.push('/flightsList', extra: bookingModel);
                           }
                         } else {
                           bookingModel.returnTrip = scheduleModel;
@@ -210,54 +209,12 @@ class _FlightSearchScreenState extends State<FlightListScreen> {
                           if (isReturn == true) {
                             bookingModel.returnTrip = null;
                             bookingModel.amount -= newAmount;
-                            //context.push('/flightsList', extra: bookingModel);
                           }
                         }
                       } else {
                         bookingModel.departureTrip = scheduleModel;
                         context.push('/flightBooking', extra: bookingModel);
                       }
-
-                      /*if (bookingModel.departureTrip == null) {
-                      bookingModel.departureTrip = scheduleModel;
-                    } else {
-                      bookingModel.returnTrip ??= scheduleModel;
-                    }
-
-                    if (bookingModel.isRoundTrip &&
-                        bookingModel.returnTrip == null) {
-                      bool? isReturn = await GoRouter.of(
-                        context,
-                      ).push('/flightsList', extra: bookingModel);
-
-                      if (isReturn == true) {
-                        bookingModel.departureTrip = null;
-                        bookingModel.amount = 0;
-                        GoRouter.of(
-                          context,
-                        ).replace('/flightsList', extra: bookingModel);
-                      }
-
-                      return;
-                    }
-
-                    bool? isReturn = await context.push(
-                      '/flightBooking',
-                      extra: bookingModel,
-                    );
-                    if (isReturn == true) {
-                      if (bookingModel.isRoundTrip &&
-                          bookingModel.returnTrip != null) {
-                        bookingModel.returnTrip = null;
-                        bookingModel.amount -= newAmount;
-                      } else {
-                        bookingModel.departureTrip = null;
-                        bookingModel.amount = 0;
-                      }
-                      GoRouter.of(
-                        context,
-                      ).replace('/flightsList', extra: bookingModel);
-                    }*/
                     },
                   ),
                   const SizedBox(width: 10),

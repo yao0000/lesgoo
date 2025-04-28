@@ -24,7 +24,6 @@ class FirebaseStorageService {
     }
   }
 
-  /// Delete file from Firebase Storage
   static Future<bool> deleteFile(String path) async {
     try {
       await _storage.ref().child(path).delete();

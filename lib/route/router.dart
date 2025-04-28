@@ -146,7 +146,6 @@ final GoRouter router = GoRouter(
       path: '/ticketList',
       builder: (context, state) {
         final userUid = state.extra;
-        //return UserDetailScreen(user: getItem(user));
         return TicketPage(userUid: getItem(userUid));
       },
     ),

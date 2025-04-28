@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/index.dart';
 import 'package:travel/ui/widgets/widgets.dart';
@@ -29,7 +28,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     'Japanese',
     'Mexican',
     'Western',
-    'Malay',
+    'Fusion',
     'Cantonese',
     'Spanish',
     'Portuguese',
@@ -135,14 +134,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
     bool isInvalid = !validation();
 
-    /*if (widget.type == "hotels") {
-      isMissOut = isRequiredFieldEmpty() || facilityImage == null;
-    } else if (widget.type == "restaurants") {
-      isMissOut = isRequiredFieldEmpty() || isImageEmpty();
-    } else if (widget.type == "cars") {
-      isMissOut = isRequiredFieldEmpty() || field5.isEmpty;
-    }*/
-
     if (isInvalid) {
       showMessageDialog(
         title: "Opps",
@@ -166,7 +157,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                   filename: '$uid-facility',
                 );
 
-        urlCover = facilityImage == null ? urlCover : await HotelRepository.uploadPhoto(
+        urlCover = coverImage == null ? urlCover : await HotelRepository.uploadPhoto(
           xFile: coverImage!,
           filename: '$uid-cover',
         );
@@ -274,7 +265,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       context.pop(true);
     }
   }
-
+//==
   bool validation() {
     String field1 = _field1Controller.text.trim();
     String field2 = _field2Controller.text.trim();
@@ -296,7 +287,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     if (isImageEmpty()) {
       return false;
     }
-    if (widget.type == "cars" && facilityImage == null) {
+    if (widget.type == "hotels" && facilityImage == null) {
       return false;
     }
 
@@ -424,7 +415,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     );
   }
 
-  // Function to create text fields
   Widget buildTextField(
     String label,
     TextEditingController controller, {

@@ -12,7 +12,6 @@ export 'toast.dart';
 
 export 'card_holder.dart';
 
-export 'admin/admin_app_bar.dart';
 export 'traveller/traveller_app_bar.dart';
 
 export 'dropdown_selector.dart';

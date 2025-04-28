@@ -51,16 +51,15 @@ class _FilterDrawer extends State<FilterDrawer> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Container(
-        padding: EdgeInsets.all(16), // Optional padding for styling
-        width: double.infinity, // Ensure the parent container takes full width
+        padding: EdgeInsets.all(16), 
+        width: double.infinity, 
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text("Sort by", style: TextStyle(fontWeight: FontWeight.bold)),
 
-            // Ensure Sort Buttons Take Full Width
             SizedBox(
-              width: double.infinity, // Force full width
+              width: double.infinity, 
               child: Column(
                 children: [
                   ButtonAction(

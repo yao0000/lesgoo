@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    showLoadingDialog(context, "logging in progress...");
+    showLoadingDialog(context, "Logging in progress...");
     bool success = await AuthService.login(
       _emailController.text.trim(),
       _passwordController.text.trim(),
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
     Navigator.pop(context);
 
     if (success) {
-      showToast("Login successfully");
+      showToast("Login Successfully");
       await Global.loadUserInfo();
       if (Global.user.role == 'user') {
         context.go('/home');

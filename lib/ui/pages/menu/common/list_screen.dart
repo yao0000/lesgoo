@@ -68,14 +68,14 @@ class _ListScreen extends State<ListScreen> {
     bool isCar = widget.type == "cars";
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Important to allow full height customization
+      isScrollControlled: true, 
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
         return DraggableScrollableSheet(
           expand: false,
-          initialChildSize:  isCar ? 0.7 : 0.6, // 60% of screen height, adjust as needed
+          initialChildSize:  isCar ? 0.7 : 0.6,
           minChildSize: 0.3,
           maxChildSize: 0.9,
           builder: (context, scrollController) {
@@ -188,9 +188,9 @@ class _ListScreen extends State<ListScreen> {
     return GestureDetector(
       onTap: () {
         setState(() {
-          showDropdown = false; // Hide dropdown when tapping outside
+          showDropdown = false; 
         });
-        FocusScope.of(context).unfocus(); // Close keyboard if open
+        FocusScope.of(context).unfocus(); 
       },
       behavior: HitTestBehavior.opaque,
       child: Scaffold(
@@ -344,9 +344,9 @@ class _ListScreen extends State<ListScreen> {
                               setState(() {
                                 searchHistory.removeAt(
                                   index,
-                                ); // Remove item from the list
+                                ); 
                               });
-                              saveSearchHistoryToStorage(); // Update storage
+                              saveSearchHistoryToStorage(); 
                             },
                           ),
                           onTap: () {

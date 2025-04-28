@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:travel/data/global.dart';
-import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/function.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:travel/data/repositories/car_repository.dart';
@@ -152,13 +151,14 @@ class _BookingScreenState extends State<BookingScreen> {
       bookingItem = RestaurantBookingModel(
         itemUid: item.uid.toString(),
         userUid: AuthService.getCurrentUser()!.uid,
-        time: DateTime(
-          startDate!.year,
-          startDate!.month,
-          startDate!.day,
-          selectedTime!.hour,
-          selectedTime!.minute,
-        ).toUtc(),
+        time:
+            DateTime(
+              startDate!.year,
+              startDate!.month,
+              startDate!.day,
+              selectedTime!.hour,
+              selectedTime!.minute,
+            ).toUtc(),
         pax: count,
         amount: _getTotalPrice(),
       );
@@ -197,23 +197,23 @@ class _BookingScreenState extends State<BookingScreen> {
       String sDate = "";
       if (bookingItem is HotelBookingModel) {
         Global.user.notifications[1] = true;
-        sName = "Hotel";
+        sName = "hotel";
         sDate = DateFormat("d/M/yyyy").format(bookingItem.startDate.toLocal());
-      }
-      else if (bookingItem is RestaurantBookingModel){
+      } else if (bookingItem is RestaurantBookingModel) {
         Global.user.notifications[2] = true;
-        sName = "Restaurant";
+        sName = "restaurant";
         sDate = DateFormat("d/M/yyyy").format(bookingItem.time.toLocal());
-      }
-      else if (bookingItem is CarBookingModel){
+      } else if (bookingItem is CarBookingModel) {
         Global.user.notifications[3] = true;
-        sName = "Transportation";
+        sName = "cars";
         sDate = DateFormat("d/M/yyyy").format(bookingItem.startDate.toLocal());
       }
       UserRepository.update();
       Global.updateNotifications();
 
-      showNotification("Hi ${Global.user.name}, your booking for $sName on $sDate has been successfully confirmed. You can view the full details in Ticket");
+      showNotification(
+        "Hi ${Global.user.name}, your booking for $sName on $sDate has been successfully confirmed. You can view the full details in Ticket",
+      );
       showToast("Booking successfully");
       GoRouter.of(
         context,
@@ -489,17 +489,17 @@ class _BookingScreenState extends State<BookingScreen> {
 }
 
 Widget buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-          ),
-          Text(value, style: TextStyle(color: Colors.blue)),
-        ],
-      ),
-    );
-  }
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+        Text(value, style: TextStyle(color: Colors.blue)),
+      ],
+    ),
+  );
+}

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:travel/constants/app_colors.dart';
 
-
 void showLoadingDialog(BuildContext context, String message) {
   showDialog(
     context: context,

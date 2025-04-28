@@ -35,10 +35,6 @@ class CardHolder extends StatelessWidget {
                   height: 120,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  /*loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return const Center(child: CircularProgressIndicator());
-                },*/
                   errorBuilder: (context, error, stackTrace) {
                     return const Icon(
                       Icons.broken_image,
@@ -119,6 +115,21 @@ class CardHolder extends StatelessWidget {
           }
         case "address":
           return "${item.address.substring(0, 10)}...";
+        case "rating":
+          return item.rating.toString();
+        case "price":
+          return currencyFormat.format(item.price);
+      }
+    }else if (item is CarModel) {
+      switch (key) {
+        case "name":
+          {
+            return item.name.toString();
+          }
+        case "imageUrl":
+          {
+            return item.imageUrl.toString(); 
+          }
         case "rating":
           return item.rating.toString();
         case "price":

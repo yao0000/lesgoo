@@ -30,10 +30,6 @@ class DropdownSelector extends StatelessWidget {
                   ))
               .toList(),
           onChanged: onChanged,
-          /*decoration: InputDecoration(
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-            contentPadding: EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-          ),*/
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.symmetric(horizontal: 15),
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(25)),

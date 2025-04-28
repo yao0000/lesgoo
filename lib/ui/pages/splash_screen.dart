@@ -17,7 +17,6 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () async {
-      //AuthService.signOut();
       if (mounted) {
         if (AuthService.isUserLoggedIn()) {
           await Global.loadUserInfo();
@@ -31,7 +30,6 @@ class _SplashScreenState extends State<SplashScreen> {
           context.go('/login');
         }
       }
-      //context.go('/home');
     });
   }
 

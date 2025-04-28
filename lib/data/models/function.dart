@@ -1,4 +1,3 @@
-import 'package:travel/data/models/car_model.dart';
 import 'package:travel/data/models/index.dart';
 import 'package:intl/intl.dart';
 
